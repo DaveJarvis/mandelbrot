@@ -28,10 +28,8 @@ void generate_image( struct arguments arguments ) {
 
   for( int x = 0; x < w; x++ ) {
     for( int y = 0; y < h; y++ ) {
-      double x_real =
-        x1 + (x * 1.0 / w) * (x2 - x1);
-      double y_imag =
-        y1 + (y * 1.0 / h) * (y2 - y1);
+      double x_real = x1 + (x * 1.0 / w) * (x2 - x1);
+      double y_imag = y1 + (y * 1.0 / h) * (y2 - y1);
 
       double complex c = x_real + y_imag * I;
 
