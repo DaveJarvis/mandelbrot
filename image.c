@@ -12,6 +12,45 @@ Image image_open( int width, int height ) {
 }
 
 /**
+ * Pointer to region returned by this function must be closed using
+ * image_region_close. The regions created by this function should be
+ * non-overlapping so that individual threads can draw independently.
+ *
+ * @param image The image that was opened for drawing.
+ * @param n The region index (0 through regions - 1).
+ * @param regions The number of regions to create.
+ */
+struct region *image_region_open( Image image, int n, int regions ) {
+  int x1 = 0, y1 = 0;
+  int width = 0;
+  int height = 0;
+  struct region *region = malloc( sizeof( struct region ) );
+
+  if( region != NULL ) {
+    gdImageGetClip( image, &x1, &y1, &width, &height );
+
+    int step_x = (int)round(1.0 * width / regions);
+    int step_y = (int)round(1.0 * height / regions);
+
+    region->x1 = step_x * n;
+    region->y1 = 0;
+    region->x2 = region->x1 + step_x;
+    region->y2 = width;
+  }
+
+  return region;
+}
+
+/**
+ * Closes region that was opened using image_region_open.
+ */
+void image_region_close( struct region *region ) {
+  if( region != NULL ) {
+    free( region );
+  }
+}
+
+/**
  * Create a new grayscale colour for the given image.
  */
 int image_colour_grayscale( Image image, int s ) {
