@@ -1,0 +1,16 @@
+#ifndef __H_CONSTANTS
+#define __H_CONSTANTS
+
+#define DEFAULT_IMAGE_WIDTH 1024
+#define DEFAULT_IMAGE_HEIGHT 768
+#define DEFAULT_ITERATIONS 200
+
+#define DEFAULT_PLOT_REAL_X1 -2.0
+#define DEFAULT_PLOT_REAL_X2  1.0
+#define DEFAULT_PLOT_IMAG_Y1 -1.0
+#define DEFAULT_PLOT_IMAG_Y2  1.0
+
+#define DEFAULT_FILENAME "out.png"
+
+#endif
+

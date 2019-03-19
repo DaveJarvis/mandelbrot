@@ -3,16 +3,17 @@
 
 #include <gd.h>
 
-#define IMAGE_WIDTH (256)
-#define IMAGE_HEIGHT (160)
-
-#define IMAGE_SCALE (1)
+int IMAGE_PALETTE[255];
 
 typedef gdImagePtr Image;
 
 Image image_open( int width, int height );
 
-int image_colour( Image image, int r, int g, int b );
+/**
+ * @param image Pointer to the image structure.
+ * @param s Grayscale colour value.
+ */
+int image_colour_grayscale( Image image, int s );
 
 void image_pixel( Image image, int x, int y, int colour );
 
