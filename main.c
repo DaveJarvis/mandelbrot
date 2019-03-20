@@ -8,7 +8,7 @@ int main( int c, char **v ) {
 
   options_init( &arguments );
   argp_parse( &argp, c, v, 0, 0, &arguments );
-  log_verbose( &arguments, doc_program );
+  log_verbose( &arguments, "Start: %s", doc_program );
 
   log_verbose( &arguments, "Determine number of CPUs available" );
   int threads = thread_cpu_count( arguments.threads );
@@ -78,7 +78,7 @@ int main( int c, char **v ) {
   log_verbose( &arguments, "Release memory for image" );
   image_close( image );
 
-  log_verbose( &arguments, "End program" );
+  log_verbose( &arguments, "Stop" );
   return 0;
 }
 
