@@ -13,6 +13,10 @@ int main( int c, char **v ) {
   options_init( &arguments );
   argp_parse( &argp, c, v, 0, 0, &arguments );
 
+  /* Determine height in relation to width */
+  arguments.height = arguments.width / (1.0 + (1.0 /
+    (arguments.plot_r2 - arguments.plot_r1)));
+
   int threads = thread_cpu_count( arguments.threads );
   pthread_t *thread_ids = thread_open( threads );
 
@@ -22,9 +26,7 @@ int main( int c, char **v ) {
   Image image = image_open( arguments.width, arguments.height );
   int **plot = mandelbrot_plot_open( &arguments );
 
-  /**
-   * Abort if insufficent memory.
-   */
+  /* Abort if insufficent memory. */
   if( plot == NULL || image == NULL || p == NULL || thread_ids == NULL ) {
     mandelbrot_plot_close( plot, &arguments );
     image_close( image );
@@ -33,9 +35,7 @@ int main( int c, char **v ) {
     error_terminate( ERROR_MEMORY, ERROR_MEMORY_TEXT );
   }
 
-  /**
-   * Compute the Mandelbrot Set escape iterations.
-   */
+  /* Compute the Mandelbrot Set escape iterations. */
   for( int i = 0; i < threads; i++ ) {
     mandelbrot_parameters *parameters = mandelbrot_parameters_open();
     struct region *region = image_region_open( image, i, threads );
@@ -43,16 +43,18 @@ int main( int c, char **v ) {
     parameters->arguments = &arguments;
     parameters->image = image;
     parameters->region = region;
+
+    /* Shared across all threads. */
     parameters->plot = plot;
 
+    /* Retain a reference for free'ing memory. */
     p[i] = parameters;
 
+    /* Compute the Mandelbrot Set escape iterations. */
     pthread_create( &thread_ids[i], NULL, mandelbrot_compute, parameters );
   }
 
-  /**
-   * Wait for the threads to finish their computations.
-   */
+  /* Wait for the threads to finish their computations. */
   for( int i = 0; i < threads; i++ ) {
     pthread_join( thread_ids[i], NULL );
 
@@ -63,23 +65,10 @@ int main( int c, char **v ) {
     mandelbrot_parameters_close( parameters );
   }
 
-	int iterations = arguments.iterations;
+  /* Draw an image using the plotted values. */
+  mandelbrot_render( plot, image, &arguments );
 
-	/**
-   * Colourise the image.
-	 */
-  for( int x = 0; x < arguments.width; x++ ) {
-    for( int y = 0; y < arguments.height; y++ ) {
-			int value = plot[x][y];
-      int saturation = 255 - (int)(value * (255.0 / iterations));
-
-      image_pixel( image, x, y, saturation );
-    }
-  }
-
-  /**
-   * Free up resources and then save the file.
-   */
+  /* Free up resources and then save the file. */
   mandelbrot_plot_close( plot, &arguments );
 
   image_save( image, arguments.filename );

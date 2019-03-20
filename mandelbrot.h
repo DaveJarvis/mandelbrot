@@ -51,5 +51,13 @@ int mandelbrot_escape( double complex c, int power, int max_iterate );
  */
 void *mandelbrot_compute( void *params );
 
+/**
+ * Render the image using the plotted data.
+ *
+ * @param plot The data computed from mandelbrot_compute.
+ * @param arguments Command line arguments to configure settings.
+ */
+void mandelbrot_render( int **plot, Image image, struct arguments *arguments );
+
 #endif
 

@@ -81,9 +81,6 @@ void *mandelbrot_compute( void *params ) {
   double y1 = args->plot_i1;
   double y2 = args->plot_i2;
 
-  printf( "(%d - %d), (%d - %d)\n",
-    region->x1, region->y1, region->x2, region->y2 );
-
   for( int x = region->x1; x < region->x2; x++ ) {
     for( int y = region->y1; y < region->y2; y++ ) {
       double x_real = x1 + (x * 1.0 / w) * (x2 - x1);
@@ -96,5 +93,18 @@ void *mandelbrot_compute( void *params ) {
   }
 
   pthread_exit( NULL );
+}
+
+void mandelbrot_render( int **plot, Image image, struct arguments *arguments ) {
+  int iterations = arguments->iterations;
+
+  for( int x = 0; x < arguments->width; x++ ) {
+    for( int y = 0; y < arguments->height; y++ ) {
+      int value = plot[x][y];
+      int s = 255 - (int)(value * (255.0 / iterations));
+
+      image_pixel( image, x, y, s, s, s );
+    }
+  }
 }
 

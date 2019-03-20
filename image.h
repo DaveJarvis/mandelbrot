@@ -55,9 +55,9 @@ int image_colour_grayscale( Image image, int s );
 
 /**
  * Draw a pixel on the image at the given coordinates with the given
- * saturation.
+ * RGB colour.
  */
-void image_pixel( Image image, int x, int y, int colour );
+void image_pixel( Image image, int x, int y, int r, int g, int b );
 
 /**
  * Export the given image to the specified file.

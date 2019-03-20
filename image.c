@@ -1,11 +1,7 @@
 #include "image.h"
 
 Image image_open( int width, int height ) {
-  for( int i = 0; i < sizeof( IMAGE_PALETTE ) / sizeof( int ); i++ ) {
-    IMAGE_PALETTE[i] = -1;
-  }
-
-  return gdImageCreate( width, height );
+  return gdImageCreateTrueColor( width, height );
 }
 
 struct region *image_region_open( Image image, int n, int regions ) {
@@ -36,16 +32,8 @@ void image_region_close( struct region *region ) {
   }
 }
 
-int image_colour_grayscale( Image image, int s ) {
-  if( IMAGE_PALETTE[ s ] == -1 ) {
-    IMAGE_PALETTE[ s ] = gdImageColorAllocate( image, s, s, s );
-  }
-
-  return IMAGE_PALETTE[ s ];
-}
-
-void image_pixel( Image image, int x, int y, int saturation ) {
-  int colour = image_colour_grayscale( image, saturation );
+void image_pixel( Image image, int x, int y, int r, int g, int b ) {
+  int colour = (r << 16) | (g << 8) | b;
 
   gdImageSetPixel( image, x, y, colour );
 }

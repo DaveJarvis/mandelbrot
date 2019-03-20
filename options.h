@@ -21,14 +21,12 @@ static char doc_program[] =
   "A simple Mandelbrot Set image generator";
 
 /* A description of the arguments we accept. */
-static char doc_args[] = "-w -h -i -a -b -y -z -o";
+static char doc_args[] = "";
 
 /* The options we understand. */
 static struct argp_option options[] = {
   { "width",   'w', "INTEGER", 0,
     "Image width" opt( DEFAULT_IMAGE_WIDTH, "px" ) },
-  { "height",  'h', "INTEGER", 0,
-    "Image height" opt( DEFAULT_IMAGE_HEIGHT, "px" ) },
   { "iterate", 'i', "INTEGER", 0,
     "Resolution depth" opt( DEFAULT_ITERATIONS, "" ) },
   { "threads", 't', "INTEGER", 0,
