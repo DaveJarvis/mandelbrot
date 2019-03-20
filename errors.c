@@ -1,7 +1,7 @@
 #include "errors.h"
 
-void error_terminate( int error_level, char *message ) {
+void error_terminate( int exit_code, char *message ) {
   fprintf( stderr, "%s\n", message );
-  exit( error_level );
+  exit( exit_code );
 }
 

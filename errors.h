@@ -10,10 +10,10 @@
 /**
  * Exits the application with the given error level.
  *
- * @param error_level The program exit code.
+ * @param exit_code The program exit code.
  * @param message The error message to write to standard error.
  */
-void error_terminate( int error_level, char *message );
+void error_terminate( int exit_code, char *message );
 
 #endif
 

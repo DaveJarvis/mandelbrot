@@ -1,8 +1,4 @@
 #include "mandelbrot.h"
-#include "image.h"
-#include "options.h"
-#include "threads.h"
-#include "errors.h"
 
 /**
  * Draws the Mandelbrot Set as a colourful image.
@@ -13,20 +9,18 @@ int main( int c, char **v ) {
   options_init( &arguments );
   argp_parse( &argp, c, v, 0, 0, &arguments );
 
-  /* Determine height in relation to width */
-  arguments.height = arguments.width / (1.0 + (1.0 /
-    (arguments.plot_r2 - arguments.plot_r1)));
-
+  log_verbose( &arguments, "Determine number of CPUs available" );
   int threads = thread_cpu_count( arguments.threads );
   pthread_t *thread_ids = thread_open( threads );
 
   mandelbrot_parameters **p =
     memory_open( sizeof( mandelbrot_parameters * ) * threads );
 
+  log_verbose( &arguments, "Allocate memory for canvas" );
   Image image = image_open( arguments.width, arguments.height );
   int **plot = mandelbrot_plot_open( &arguments );
 
-  /* Abort if insufficent memory. */
+  log_verbose( &arguments, "Check for sufficient memory" );
   if( plot == NULL || image == NULL || p == NULL || thread_ids == NULL ) {
     mandelbrot_plot_close( plot, &arguments );
     image_close( image );
@@ -35,7 +29,7 @@ int main( int c, char **v ) {
     error_terminate( ERROR_MEMORY, ERROR_MEMORY_TEXT );
   }
 
-  /* Compute the Mandelbrot Set escape iterations. */
+  log_verbose( &arguments, "Start threads to calculate escape iterations" );
   for( int i = 0; i < threads; i++ ) {
     mandelbrot_parameters *parameters = mandelbrot_parameters_open();
     struct region *region = image_region_open( image, i, threads );
@@ -50,11 +44,11 @@ int main( int c, char **v ) {
     /* Retain a reference for free'ing memory. */
     p[i] = parameters;
 
-    /* Compute the Mandelbrot Set escape iterations. */
+    /* Compute the iterations within a thread for a particular region. */
     pthread_create( &thread_ids[i], NULL, mandelbrot_compute, parameters );
   }
 
-  /* Wait for the threads to finish their computations. */
+  log_verbose( &arguments, "Wait for threads to finish calculations" );
   for( int i = 0; i < threads; i++ ) {
     pthread_join( thread_ids[i], NULL );
 
@@ -65,16 +59,21 @@ int main( int c, char **v ) {
     mandelbrot_parameters_close( parameters );
   }
 
-  /* Draw an image using the plotted values. */
-  mandelbrot_render( plot, image, &arguments );
-
-  /* Free up resources and then save the file. */
-  mandelbrot_plot_close( plot, &arguments );
-
-  image_save( image, arguments.filename );
-  image_close( image );
+  log_verbose( &arguments, "Release memory for threads" );
   memory_close( p );
   thread_close( thread_ids );
+
+  log_verbose( &arguments, "Draw image using calculated iterations" );
+  mandelbrot_render( plot, image, &arguments );
+
+  log_verbose( &arguments, "Release memory used by calculated iterations" );
+  mandelbrot_plot_close( plot, &arguments );
+
+  log_verbose( &arguments, "Save image to file" );
+  image_save( image, arguments.filename );
+
+  log_verbose( &arguments, "Release memory for image" );
+  image_close( image );
 
   return 0;
 }

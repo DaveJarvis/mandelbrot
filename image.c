@@ -33,6 +33,7 @@ void image_region_close( struct region *region ) {
 }
 
 void image_pixel( Image image, int x, int y, int r, int g, int b ) {
+  /* Convert the 8-bit RGB triplet to a 24-bit colour */
   int colour = (r << 16) | (g << 8) | b;
 
   gdImageSetPixel( image, x, y, colour );

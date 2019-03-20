@@ -25,8 +25,12 @@ static char doc_args[] = "";
 
 /* The options we understand. */
 static struct argp_option options[] = {
+  { "verbose", 'v', 0, 0,
+    "Write algorithmic details to standard output" },
   { "width",   'w', "INTEGER", 0,
     "Image width" opt( DEFAULT_IMAGE_WIDTH, "px" ) },
+  { "height",   'h', "INTEGER", 0,
+    "Image height" opt( DEFAULT_IMAGE_HEIGHT, "px" ) },
   { "iterate", 'i', "INTEGER", 0,
     "Resolution depth" opt( DEFAULT_ITERATIONS, "" ) },
   { "threads", 't', "INTEGER", 0,
@@ -46,6 +50,7 @@ static struct argp_option options[] = {
 
 /* Used by main to communicate with parse_opt. */
 struct arguments {
+  bool verbose;
   int width, height, iterations, threads;
   double plot_r1, plot_r2;
   double plot_i1, plot_i2;

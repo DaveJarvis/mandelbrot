@@ -22,8 +22,7 @@ int colour_normalise( int iterations );
  * From http://lolengine.net/blog/2013/01/13/fast-rgb-to-hsv
  */
 void colour_rgb_to_hsv(
-  float r, float g, float b,
-  float *h, float *s, float *v );
+  int r, int g, int b, double *h, double *s, double *v );
 
 /**
  * Convert HSV to RGB.
@@ -35,8 +34,7 @@ void colour_rgb_to_hsv(
  * @return r, g, b valued between 0 and 255.
  */
 void colour_hsv_to_rgb(
-  float h, float s, float v,
-  float *r, float *g, float *b );
+  double h, double s, double v, double *r, double *g, double *b );
 
 #endif
 

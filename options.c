@@ -1,7 +1,7 @@
 #include "constants.h"
 #include "options.h"
 
-const char *argp_program_version = "1.0";
+const char *argp_program_version = "1.0.0";
 const char *argp_program_bug_address =
   "https://github.com/DaveJarvis/mandelbrot/issues";
 
@@ -9,8 +9,14 @@ error_t parse_opt( int key, char *arg, struct argp_state *state ) {
   struct arguments *arguments = state->input;
 
   switch( key ) {
+    case 'v':
+      arguments->verbose = true;
+      break;
     case 'w':
       arguments->width = arg ? atoi( arg ) : DEFAULT_IMAGE_WIDTH;
+      break;
+    case 'h':
+      arguments->height = arg ? atoi( arg ) : DEFAULT_IMAGE_HEIGHT;
       break;
     case 'i':
       arguments->iterations = arg ? atoi( arg ) : DEFAULT_ITERATIONS;
@@ -42,8 +48,9 @@ error_t parse_opt( int key, char *arg, struct argp_state *state ) {
 }
 
 void options_init( struct arguments *arguments ) {
+  arguments->verbose = DEFAULT_VERBOSE;
   arguments->width = DEFAULT_IMAGE_WIDTH;
-  arguments->height = DEFAULT_IMAGE_WIDTH;
+  arguments->height = DEFAULT_IMAGE_HEIGHT;
   arguments->iterations = DEFAULT_ITERATIONS;
   arguments->threads = DEFAULT_THREADS;
   arguments->plot_r1 = DEFAULT_PLOT_REAL_X1;
