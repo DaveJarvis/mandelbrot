@@ -20,9 +20,9 @@ void mandelbrot_parameters_close( mandelbrot_parameters *parameters ) {
   }
 }
 
-int **mandelbrot_plot_open( struct arguments *arguments ) {
-  int width = arguments->width;
-  int height = arguments->height;
+int **mandelbrot_plot_open( struct arguments *args ) {
+  int width = args->width;
+  int height = args->height;
 
   int **plot = memory_open( sizeof( int * ) * width );
   plot[0] = memory_open( sizeof( int ) * width * height );
@@ -35,9 +35,7 @@ int **mandelbrot_plot_open( struct arguments *arguments ) {
   return plot;
 }
 
-void mandelbrot_plot_close( int **plot, struct arguments *arguments ) {
-  int width = arguments->width;
-
+void mandelbrot_plot_close( int **plot ) {
   memory_close( plot );
 }
 
@@ -85,16 +83,25 @@ void *mandelbrot_compute( void *params ) {
   pthread_exit( NULL );
 }
 
-void mandelbrot_render( int **plot, Image image, struct arguments *arguments ) {
-  int MAX_ITERATIONS = arguments->iterations;
+double mandelbrot_nonlinear( int iterations, struct arguments *args ) {
+  int max_iterations = args->iterations;
+  return (cos( (1.0 * iterations / max_iterations) * M_PI + M_PI) + 1) / 2;
+}
 
-  for( int x = 0; x < arguments->width; x++ ) {
-    for( int y = 0; y < arguments->height; y++ ) {
+void mandelbrot_render( int **plot, Image image, struct arguments *args ) {
+  int max_iterations = args->iterations;
+
+  /* Find the minimum and maximum values to normalise over */
+
+  for( int x = 0; x < args->width; x++ ) {
+    for( int y = 0; y < args->height; y++ ) {
       int iterations = plot[x][y];
 
-      double h = 360.0 * iterations / MAX_ITERATIONS;
+      double i = mandelbrot_nonlinear( iterations, args );
+
+      double h = 360.0 * i;
       double s = 255.0 / 255.0;
-      double v = (iterations < MAX_ITERATIONS ? 255.0 : 0) / 255.0;
+      double v = (iterations < max_iterations ? 255.0 : 0) / 255.0;
 
       double r = 0;
       double g = 0;

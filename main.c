@@ -8,10 +8,13 @@ int main( int c, char **v ) {
 
   options_init( &arguments );
   argp_parse( &argp, c, v, 0, 0, &arguments );
+  log_verbose( &arguments, doc_program );
 
   log_verbose( &arguments, "Determine number of CPUs available" );
   int threads = thread_cpu_count( arguments.threads );
   pthread_t *thread_ids = thread_open( threads );
+
+  log_verbose( &arguments, "Using %d threads", threads );
 
   mandelbrot_parameters **p =
     memory_open( sizeof( mandelbrot_parameters * ) * threads );
@@ -22,7 +25,7 @@ int main( int c, char **v ) {
 
   log_verbose( &arguments, "Check for sufficient memory" );
   if( plot == NULL || image == NULL || p == NULL || thread_ids == NULL ) {
-    mandelbrot_plot_close( plot, &arguments );
+    mandelbrot_plot_close( plot );
     image_close( image );
     memory_close( p );
     thread_close( thread_ids );
@@ -48,7 +51,7 @@ int main( int c, char **v ) {
     pthread_create( &thread_ids[i], NULL, mandelbrot_compute, parameters );
   }
 
-  log_verbose( &arguments, "Wait for threads to finish calculations" );
+  log_verbose( &arguments, "Wait for threads to finish" );
   for( int i = 0; i < threads; i++ ) {
     pthread_join( thread_ids[i], NULL );
 
@@ -59,7 +62,7 @@ int main( int c, char **v ) {
     mandelbrot_parameters_close( parameters );
   }
 
-  log_verbose( &arguments, "Release memory for threads" );
+  log_verbose( &arguments, "Release thread memory" );
   memory_close( p );
   thread_close( thread_ids );
 
@@ -67,7 +70,7 @@ int main( int c, char **v ) {
   mandelbrot_render( plot, image, &arguments );
 
   log_verbose( &arguments, "Release memory used by calculated iterations" );
-  mandelbrot_plot_close( plot, &arguments );
+  mandelbrot_plot_close( plot );
 
   log_verbose( &arguments, "Save image to file" );
   image_save( image, arguments.filename );
@@ -75,6 +78,7 @@ int main( int c, char **v ) {
   log_verbose( &arguments, "Release memory for image" );
   image_close( image );
 
+  log_verbose( &arguments, "End program" );
   return 0;
 }
 

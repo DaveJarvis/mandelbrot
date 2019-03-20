@@ -34,12 +34,12 @@ void mandelbrot_parameters_close( mandelbrot_parameters *parameters );
 /**
  * Called to allocate memory for storing histogram of interation values.
  */
-int **mandelbrot_plot_open( struct arguments *arguments );
+int **mandelbrot_plot_open( struct arguments *args );
 
 /**
  * Called to deallocate memory of interation values.
  */
-void mandelbrot_plot_close( int **plot, struct arguments *arguments );
+void mandelbrot_plot_close( int **plot );
 
 /**
  * Returns the number of iterations before iterating escapes the Mandelbrot
@@ -55,12 +55,17 @@ int mandelbrot_escape( double complex c, int power, int max_iterate );
 void *mandelbrot_compute( void *params );
 
 /**
+ * Non-linear function to smooth the iteration values.
+ */
+double mandelbrot_nonlinear( int iterations, struct arguments *args );
+
+/**
  * Render the image using the plotted data.
  *
  * @param plot The data computed from mandelbrot_compute.
- * @param arguments Command line arguments to configure settings.
+ * @param args Command line arguments to configure settings.
  */
-void mandelbrot_render( int **plot, Image image, struct arguments *arguments );
+void mandelbrot_render( int **plot, Image image, struct arguments *args );
 
 #endif
 
