@@ -12,12 +12,14 @@
    _a < _b ? _a : _b; })
 
 /**
- * Maps the number of iterations to a colour.
+ * Stretches the colours by mapping the number of iterations to a colour.
  */
 int colour_normalise( int iterations );
 
 /**
  * Convert RGB to HSV.
+ *
+ * From http://lolengine.net/blog/2013/01/13/fast-rgb-to-hsv
  */
 void colour_rgb_to_hsv(
   float r, float g, float b,
@@ -25,6 +27,12 @@ void colour_rgb_to_hsv(
 
 /**
  * Convert HSV to RGB.
+ *
+ * @param h Hue between 0 and 1
+ * @param s Saturation between 0 and 1
+ * @param v Value between 0 and 1
+ *
+ * @return r, g, b valued between 0 and 255.
  */
 void colour_hsv_to_rgb(
   float h, float s, float v,

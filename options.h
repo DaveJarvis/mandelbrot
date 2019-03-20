@@ -54,10 +54,16 @@ struct arguments {
   char *filename;
 };
 
+/**
+ * Parse a single option.
+ */
 error_t parse_opt( int key, char *arg, struct argp_state *state );
 
 static struct argp argp = { options, parse_opt, doc_args, doc_program };
 
+/**
+ * Sets structure elements to default values.
+ */
 void options_init( struct arguments *arguments );
 
 #endif

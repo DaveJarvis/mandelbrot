@@ -1,15 +1,9 @@
 #include "colours.h"
 
-/**
- * Stretches the colours.
- */
 int colour_normalise( int iterations ) {
   return 0;
 }
 
-/**
- * From http://lolengine.net/blog/2013/01/13/fast-rgb-to-hsv
- */
 void colour_rgb_to_hsv(
   float r, float g, float b, float *h, float *s, float *v ) {
   float k = 0.f;
@@ -34,13 +28,6 @@ void colour_rgb_to_hsv(
   *v = r;
 }
 
-/**
- * @param h Hue between 0 and 1
- * @param s Saturation between 0 and 1
- * @param v Value between 0 and 1
- *
- * @return r, g, b valued between 0 and 255.
- */
 void colour_hsv_to_rgb(
   float h, float s, float v, float *r, float *g, float *b ) {
 	if( s == 0 ) {

@@ -6,7 +6,6 @@ const char *argp_program_version =
 const char *argp_program_bug_address =
   "https://github.com/DaveJarvis/mandelbrot/issues";
 
-/* Parse a single option. */
 error_t parse_opt( int key, char *arg, struct argp_state *state ) {
   struct arguments *arguments = state->input;
 

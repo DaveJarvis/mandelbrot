@@ -1,32 +1,46 @@
 #include "mandelbrot.h"
 
+mandelbrot_parameters *mandelbrot_parameters_open() {
+  mandelbrot_parameters *parameters =
+    memory_open( sizeof( mandelbrot_parameters ) );
+
+  if( parameters != NULL ) {
+    parameters->arguments = NULL;
+    parameters->region = NULL;
+    parameters->image = NULL;
+    parameters->plot = NULL;
+  }
+
+  return parameters;
+}
+
+void mandelbrot_parameters_close( mandelbrot_parameters *parameters ) {
+  if( parameters != NULL ) {
+    memory_close( parameters );
+  }
+}
+
 int **mandelbrot_plot_open( struct arguments *arguments ) {
   int width = arguments->width;
   int height = arguments->height;
 
-  int **result = (int **)memory_open( sizeof( int * ) * width );
+  int **plot = memory_open( sizeof( int * ) * width );
+  plot[0] = memory_open( sizeof( int ) * width * height );
 
+  /** Adjust the memory offsets */
   for( int i = 0; i < width; i++ ) {
-    result[ i ] = (int *)memory_open( sizeof( int ) * height );
+    plot[ i ] = (*plot + height * i);
   }
 
-  return result;
+  return plot;
 }
 
 void mandelbrot_plot_close( int **plot, struct arguments *arguments ) {
   int width = arguments->width;
 
-  for( int i = 0; i < width; i++ ) {
-    memory_close( plot[ i ] );
-  }
-
   memory_close( plot );
 }
 
-/**
- * Returns the number of iterations before iterating escapes the Mandelbrot
- * Set.
- */
 int mandelbrot_escape( double complex c, int power, int max_iterate ) {
   double complex z = 0;
   int n = 0;
@@ -52,14 +66,12 @@ int mandelbrot_escape( double complex c, int power, int max_iterate ) {
   return n >= max_iterate ? max_iterate : (n + 1 - log( log2( cabs( z ) ) ));
 }
 
-/**
- * Run by a single thread to fill in part of a Mandelbrot Set image.
- */
-void *mandelbrot_image( void *params ) {
-  struct thread_parameters *parameters = params;
+void *mandelbrot_compute( void *params ) {
+  mandelbrot_parameters *parameters = params;
   struct arguments *args = parameters->arguments;
   struct region *region = parameters->region;
   Image image = parameters->image;
+  int **plot = parameters->plot;
 
   int w = args->width;
   int h = args->height;
@@ -69,6 +81,9 @@ void *mandelbrot_image( void *params ) {
   double y1 = args->plot_i1;
   double y2 = args->plot_i2;
 
+  printf( "(%d - %d), (%d - %d)\n",
+    region->x1, region->y1, region->x2, region->y2 );
+
   for( int x = region->x1; x < region->x2; x++ ) {
     for( int y = region->y1; y < region->y2; y++ ) {
       double x_real = x1 + (x * 1.0 / w) * (x2 - x1);
@@ -76,11 +91,7 @@ void *mandelbrot_image( void *params ) {
 
       double complex c = x_real + y_imag * I;
 
-      int iter = mandelbrot_escape( c, 2, i );
-
-      int saturation = 255 - (int)(iter * (255.0 / i));
-
-      image_pixel( image, x, y, saturation );
+      plot[x][y] = mandelbrot_escape( c, 2, i );
     }
   }
 
