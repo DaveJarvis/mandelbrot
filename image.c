@@ -9,7 +9,8 @@ Image image_open( int width, int height ) {
 }
 
 struct region *image_region_open( Image image, int n, int regions ) {
-  int x1 = 0, y1 = 0;
+  int x1 = 0;
+  int y1 = 0;
   int width = 0;
   int height = 0;
   struct region *region = memory_open( sizeof( struct region ) );
@@ -19,17 +20,12 @@ struct region *image_region_open( Image image, int n, int regions ) {
 
     int step_x = (int)round( 1.0 * width / regions );
     int step_y = (int)round( 1.0 * height / regions );
-  printf( "%d - %d, %d - %d\n",
-    region->x1, region->y1, region->x2, region->y2 );
 
     region->x1 = step_x * n;
     region->y1 = 0;
     region->x2 = region->x1 + step_x;
-    region->y2 = width;
+    region->y2 = height;
   }
-
-  printf( "%d - %d, %d - %d\n",
-    region->x1, region->y1, region->x2, region->y2 );
 
   return region;
 }
