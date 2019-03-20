@@ -1,22 +1,61 @@
 #include "mandelbrot.h"
-#include "image.h"
-#include "options.h"
-#include "threads.h"
 
-int mandelbrot( double complex c, int max_iterate ) {
+int **mandelbrot_plot_open( struct arguments *arguments ) {
+  int width = arguments->width;
+  int height = arguments->height;
+
+  int **result = (int **)memory_open( sizeof( int * ) * width );
+
+  for( int i = 0; i < width; i++ ) {
+    result[ i ] = (int *)memory_open( sizeof( int ) * height );
+  }
+
+  return result;
+}
+
+void mandelbrot_plot_close( int **plot, struct arguments *arguments ) {
+  int width = arguments->width;
+
+  for( int i = 0; i < width; i++ ) {
+    memory_close( plot[ i ] );
+  }
+
+  memory_close( plot );
+}
+
+/**
+ * Returns the number of iterations before iterating escapes the Mandelbrot
+ * Set.
+ */
+int mandelbrot_escape( double complex c, int power, int max_iterate ) {
   double complex z = 0;
   int n = 0;
   int zabs = 0;
 
-  while( (zabs = cabs( z )) <= 2 && n < max_iterate ) {
-    z = z * z + c;
+  /**
+   * Terminate if the complex value is iterating towards infinity.
+   */
+  while( cabs( z ) <= 2 && n < max_iterate ) {
+    z = cpow( z, power ) + c;
     n++;
   }
 
-  return n == max_iterate ? max_iterate : (n + 1 - log( log2( zabs ) ));
+  z = z * z + c;
+  z = z * z + c;
+  n += 2;
+
+  /**
+   * Renormalize the Mandelbrot Escape
+   *
+   * http://linas.org/art-gallery/escape/escape.html
+   */
+  return n >= max_iterate ? max_iterate : (n + 1 - log( log2( cabs( z ) ) ));
 }
 
-void *generate_image( void *params ) {
+/**
+ * Run by a single thread to fill in part of a Mandelbrot Set image.
+ */
+void *mandelbrot_image( void *params ) {
   struct thread_parameters *parameters = params;
   struct arguments *args = parameters->arguments;
   struct region *region = parameters->region;
@@ -37,7 +76,8 @@ void *generate_image( void *params ) {
 
       double complex c = x_real + y_imag * I;
 
-      int iter = mandelbrot( c, i );
+      int iter = mandelbrot_escape( c, 2, i );
+
       int saturation = 255 - (int)(iter * (255.0 / i));
 
       image_pixel( image, x, y, saturation );
@@ -45,54 +85,5 @@ void *generate_image( void *params ) {
   }
 
   pthread_exit( NULL );
-}
-
-/**
- * Draw mandelbrot to an image.
- */
-int main( int c, char **v ) {
-  struct arguments arguments;
-
-  options_init( &arguments );
-  argp_parse( &argp, c, v, 0, 0, &arguments );
-
-  int threads = arguments.threads;
-  pthread_t *thread_ids = malloc( sizeof( pthread_t ) * threads );
-
-  if( thread_ids != NULL ) {
-    Image image = image_open( arguments.width, arguments.height );
-
-    struct thread_parameters **p =
-      malloc( sizeof( struct thread_parameters * ) * threads );
-
-    for( int i = 0; i < threads; i++ ) {
-      struct thread_parameters *parameters = thread_parameters_open();
-      struct region *region = image_region_open( image, i, threads );
-
-      parameters->arguments = &arguments;
-      parameters->image = image;
-      parameters->region = region;
-
-      p[i] = parameters;
-
-      pthread_create( &thread_ids[i], NULL, generate_image, parameters );
-    }
-
-    for( int i = 0; i < threads; i++ ) {
-      pthread_join( thread_ids[i], NULL );
-
-      struct thread_parameters *parameters = p[i];
-      struct region *region = parameters->region;
-
-      image_region_close( region );
-      thread_parameters_close( parameters );
-    }
-
-    image_save( image, arguments.filename );
-    image_close( image );
-    free( thread_ids );
-  }
-
-  return 0;
 }
 

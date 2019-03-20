@@ -4,6 +4,8 @@
 #include <math.h>
 #include <gd.h>
 
+#include "memory.h"
+
 int IMAGE_PALETTE[255];
 
 struct region {

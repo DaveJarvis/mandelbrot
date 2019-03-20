@@ -24,7 +24,7 @@ struct region *image_region_open( Image image, int n, int regions ) {
   int x1 = 0, y1 = 0;
   int width = 0;
   int height = 0;
-  struct region *region = malloc( sizeof( struct region ) );
+  struct region *region = memory_open( sizeof( struct region ) );
 
   if( region != NULL ) {
     gdImageGetClip( image, &x1, &y1, &width, &height );
@@ -46,7 +46,7 @@ struct region *image_region_open( Image image, int n, int regions ) {
  */
 void image_region_close( struct region *region ) {
   if( region != NULL ) {
-    free( region );
+    memory_close( region );
   }
 }
 
@@ -88,6 +88,8 @@ void image_save( Image image, char *filename ) {
  * Release the memory for the image.
  */
 void image_close( Image image ) {
-  gdImageDestroy( image );
+  if( image != NULL ) {
+    gdImageDestroy( image );
+  }
 }
 

@@ -32,7 +32,7 @@ static struct argp_option options[] = {
   { "iterate", 'i', "INTEGER", 0,
     "Resolution depth" opt( DEFAULT_ITERATIONS, "" ) },
   { "threads", 't', "INTEGER", 0,
-    "Number of CPUs to use" opt( DEFAULT_CPUS, "" ) },
+    "Number of CPUs to use" },
   { "plot-r1", 'a', "DECIMAL", 0,
     "Leftmost real coord" opt( DEFAULT_PLOT_REAL_X1, "" )  },
   { "plot-r2", 'b', "DECIMAL", 0,

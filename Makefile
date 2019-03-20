@@ -1,18 +1,22 @@
 CC = clang
 CFLAGS = -I. -O3
-DEPS = mandelbrot.h image.h options.h threads.h
-OBJ = mandelbrot.o image.o options.o threads.o
 LIBS = -lgd -lpng -lz -ljpeg -lfreetype -lm -lpthread
 
-%.o: %.c $(DEPS)
+HEADERS = $(wildcard *.h)
+SOURCES = $(wildcard *.c)
+OBJECTS = $(SOURCES:.c=.o)
+
+BINARY = mandelbrot
+
+%.o: %.c $(HEADERS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-mandelbrot: $(OBJ)
-	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
-	strip mandelbrot
+main: $(OBJECTS)
+	$(CC) -o $(BINARY) $^ $(CFLAGS) $(LIBS)
+	strip $(BINARY)
 
 .PHONY: clean
 
 clean:
-	rm -f *.o mandelbrot
+	rm -f *.o $(BINARY)
 
