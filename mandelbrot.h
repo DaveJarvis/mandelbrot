@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#include "algebra.h"
 #include "errors.h"
 #include "image.h"
 #include "logging.h"
