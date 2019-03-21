@@ -14,12 +14,26 @@ struct region *image_region_open( Image image, int n, int regions ) {
   if( region != NULL ) {
     gdImageGetClip( image, &x1, &y1, &width, &height );
 
-    int step_x = (int)round( 1.0 * width / regions );
-    int step_y = (int)round( 1.0 * height / regions );
+    int step_size = width / regions;
+    int remainder = width - (step_size * regions);
 
-    region->x1 = step_x * n;
+    region->x1 = step_size * n;
+
+    /* Determine whether extra work is required by the last thread. */
+    if( n < remainder ) {
+      /* If so, lengthen the chunk and start from the corrected position. */
+      step_size++;
+      region->x1 += n;
+    }
+    else {
+      /* If not, start from the corrected position. */
+      region->x1 += remainder;
+    }
+
+    /* Will not exceed the image size. */
+    region->x2 = region->x1 + step_size;
+
     region->y1 = 0;
-    region->x2 = region->x1 + step_x;
     region->y2 = height;
   }
 

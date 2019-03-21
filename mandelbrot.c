@@ -99,9 +99,9 @@ void mandelbrot_render( int **plot, Image image, struct arguments *args ) {
 
       double i = mandelbrot_nonlinear( iterations, args );
 
-      double h = 360.0 * i;
-      double s = 255.0 / 255.0;
-      double v = (iterations < max_iterations ? 255.0 : 0) / 255.0;
+      double h = 360.0; // * i;
+      double s = 1.0;
+      double v = 1 - i; // (iterations < max_iterations ? 1.0 : 0.0);
 
       double r = 0;
       double g = 0;
