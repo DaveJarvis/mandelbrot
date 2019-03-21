@@ -20,14 +20,14 @@ void mandelbrot_parameters_close( mandelbrot_parameters *parameters ) {
   }
 }
 
-int **mandelbrot_plot_open( struct arguments *args ) {
+plot_t **mandelbrot_plot_open( struct arguments *args ) {
   int width = args->width;
   int height = args->height;
 
-  int **plot = memory_open( sizeof( int * ) * width );
-  plot[0] = memory_open( sizeof( int ) * width * height );
+  plot_t **plot = memory_open( sizeof( plot_t * ) * width );
+  plot[0] = memory_open( sizeof( plot_t ) * width * height );
 
-  /** Adjust the memory offsets */
+  // Adjust the memory offsets
   for( int i = 0; i < width; i++ ) {
     plot[ i ] = (*plot + height * i);
   }
@@ -35,23 +35,21 @@ int **mandelbrot_plot_open( struct arguments *args ) {
   return plot;
 }
 
-void mandelbrot_plot_close( int **plot ) {
+void mandelbrot_plot_close( plot_t **plot ) {
   memory_close( plot );
 }
 
-int mandelbrot_escape( double complex c, int power, int max_iterate ) {
-  double complex z = 0;
-  int n = 0;
-  int zabs = 0;
+plot_t mandelbrot_escape( double complex c, int power, int max_iterate ) {
+  const double B = 256.0;
 
-  /* Terminate if the complex value is iterating towards infinity. */
-  while( cabs( z ) <= 2 && n < max_iterate ) {
+  double complex z = 0;
+  int i = 0;
+
+  while( i++ < max_iterate && cdot( z, z ) < (B * B) ) {
     z = cpow( z, power ) + c;
-    n++;
   }
 
-  /* Renormalize - http://linas.org/art-gallery/escape/escape.html */
-  return n >= max_iterate ? max_iterate : (n + 1 - log( log2( cabs( z ) ) ));
+  return i - log2( log2( cdot( z, z ) ) ) + 4.0;
 }
 
 void *mandelbrot_compute( void *params ) {
@@ -59,7 +57,7 @@ void *mandelbrot_compute( void *params ) {
   struct arguments *args = parameters->arguments;
   struct region *region = parameters->region;
   Image image = parameters->image;
-  int **plot = parameters->plot;
+  plot_t **plot = parameters->plot;
 
   int w = args->width;
   int h = args->height;
@@ -83,25 +81,18 @@ void *mandelbrot_compute( void *params ) {
   pthread_exit( NULL );
 }
 
-double mandelbrot_nonlinear( int iterations, struct arguments *args ) {
+void mandelbrot_render( plot_t **plot, Image image, struct arguments *args ) {
   int max_iterations = args->iterations;
-  return (cos( (1.0 * iterations / max_iterations) * M_PI + M_PI) + 1) / 2;
-}
-
-void mandelbrot_render( int **plot, Image image, struct arguments *args ) {
-  int max_iterations = args->iterations;
-
-  /* Find the minimum and maximum values to normalise over */
 
   for( int x = 0; x < args->width; x++ ) {
     for( int y = 0; y < args->height; y++ ) {
-      int iterations = plot[x][y];
+      plot_t iterations = plot[x][y];
 
-      double i = mandelbrot_nonlinear( iterations, args );
+      log_verbose( args, "(%03d, %03d) = %f", x, y, iterations );
 
-      double h = 360.0 * i;
-      double s = 1.0;
-      double v = (iterations < max_iterations ? 1.0 : 0.0);
+      double h = 0.0;
+      double s = 0.0;
+      double v = iterations / max_iterations;
 
       double r = 0;
       double g = 0;

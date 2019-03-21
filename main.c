@@ -21,7 +21,7 @@ int main( int c, char **v ) {
 
   log_verbose( &arguments, "Allocate memory for canvas" );
   Image image = image_open( arguments.width, arguments.height );
-  int **plot = mandelbrot_plot_open( &arguments );
+  plot_t **plot = mandelbrot_plot_open( &arguments );
 
   log_verbose( &arguments, "Check for sufficient memory" );
   if( plot == NULL || image == NULL || p == NULL || thread_ids == NULL ) {

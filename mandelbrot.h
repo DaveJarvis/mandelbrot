@@ -14,10 +14,12 @@
 #include "options.h"
 #include "threads.h"
 
+typedef double plot_t;
+
 typedef struct mandelbrot_parameters {
   struct arguments *arguments;
   struct region *region;
-  int **plot;
+  plot_t **plot;
 
   Image image;
 } mandelbrot_parameters;
@@ -35,18 +37,18 @@ void mandelbrot_parameters_close( mandelbrot_parameters *parameters );
 /**
  * Called to allocate memory for storing histogram of interation values.
  */
-int **mandelbrot_plot_open( struct arguments *args );
+plot_t **mandelbrot_plot_open( struct arguments *args );
 
 /**
  * Called to deallocate memory of interation values.
  */
-void mandelbrot_plot_close( int **plot );
+void mandelbrot_plot_close( plot_t **plot );
 
 /**
- * Returns the number of iterations before iterating escapes the Mandelbrot
- * Set.
+ * Returns a smoothed value representing the number of iterations before
+ * exiting from the iteration (to infinity).
  */
-int mandelbrot_escape( double complex c, int power, int max_iterate );
+plot_t mandelbrot_escape( double complex c, int power, int max_iterate );
 
 /**
  * Run by a single thread to fill in part of a Mandelbrot Set image.
@@ -66,7 +68,7 @@ double mandelbrot_nonlinear( int iterations, struct arguments *args );
  * @param plot The data computed from mandelbrot_compute.
  * @param args Command line arguments to configure settings.
  */
-void mandelbrot_render( int **plot, Image image, struct arguments *args );
+void mandelbrot_render( plot_t **plot, Image image, struct arguments *args );
 
 #endif
 
