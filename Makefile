@@ -1,6 +1,6 @@
 CC = clang
 CFLAGS = -O3
-LIBS = -lgd -lpng -lz -ljpeg -lfreetype -lm -lpthread
+LIBS = -lgd -lpng -lz -ljpeg -lm -lpthread
 
 HEADERS = $(wildcard *.h)
 SOURCES = $(wildcard *.c)
