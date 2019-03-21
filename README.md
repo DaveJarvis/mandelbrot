@@ -6,19 +6,19 @@ Renders an image from the Mandelbrot Set.
 
 Building the project requires:
 
-* [Clang](http://clang.llvm.org/) C compiler
-* [GNU Make](https://www.gnu.org/software/make/)
-* [git](https://git-scm.com/) version control system
+* [Clang](http://clang.llvm.org/) - C compiler
+* [GNU Make](https://www.gnu.org/software/make/) - Build scripting
+* [git](https://git-scm.com/) - Version control system
 
 ## Libraries
 
 Third-party libraries required to build the binary include:
 
-* Math & Threading - [glibc](https://www.gnu.org/software/libc/)
-* Graphics - [libgd](https://libgd.github.io/)
-* PNG format - [libpng](http://www.libpng.org/pub/png/libpng.html)
-* JPEG format - [libjpeg](http://libjpeg.sourceforge.net/)
-* Image compressor - [zlib](https://www.zlib.net/)
+* [glibc](https://www.gnu.org/software/libc/) - Math & Threading
+* [libgd](https://libgd.github.io/) - Graphics
+* [libpng](http://www.libpng.org/pub/png/libpng.html) - PNG format
+* [libjpeg](http://libjpeg.sourceforge.net/) - JPEG format
+* [zlib](https://www.zlib.net/) - Image compressor
 
 # Build
 
