@@ -1,13 +1,12 @@
-#ifndef __H_IMAGE
-#define __H_IMAGE
+#ifndef H_MANDELBROT_IMAGE
+#define H_MANDELBROT_IMAGE
 
 #include <math.h>
 #include <gd.h>
 
-#include "memory.h"
 #include "colours.h"
-
-int IMAGE_PALETTE[255];
+#include "options.h"
+#include "memory.h"
 
 struct region {
   int x1;
@@ -22,7 +21,7 @@ typedef gdImagePtr Image;
  * Opens an image of the given dimensions.
  *
  * @param width The number of pixels from left to right.
- * @param width The number of pixels from top to bottom.
+ * @param height The number of pixels from top to bottom.
  */
 Image image_open( int width, int height );
 
@@ -55,7 +54,11 @@ int image_colour_grayscale( Image image, int s );
 
 /**
  * Draw a pixel on the image at the given coordinates with the given
- * RGB colour.
+ * RGB colour. This converts the 8-bit RGB triplet to a 24-bit colour.
+ *
+ * @param r Red channel component (0 - 255)
+ * @param g Green channel component (0 - 255)
+ * @param b Blue channel component (0 - 255)
  */
 void image_pixel( Image image, int x, int y, int r, int g, int b );
 

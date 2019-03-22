@@ -11,13 +11,13 @@ int main( int c, char **v ) {
   log_verbose( &arguments, "Start: %s", doc_program );
 
   log_verbose( &arguments, "Determine number of CPUs available" );
-  int threads = thread_cpu_count( arguments.threads );
+  int threads = (int)thread_cpu_count( arguments.threads );
   pthread_t *thread_ids = thread_open( threads );
 
   log_verbose( &arguments, "Using %d threads", threads );
 
   mandelbrot_parameters **p =
-    memory_open( sizeof( mandelbrot_parameters * ) * threads );
+    memory_open( (size_t)sizeof( mandelbrot_parameters * ) * (size_t)threads );
 
   log_verbose( &arguments, "Allocate memory for canvas" );
   Image image = image_open( arguments.width, arguments.height );
@@ -70,7 +70,7 @@ int main( int c, char **v ) {
   thread_close( thread_ids );
 
   log_verbose( &arguments, "Draw image using calculated iterations" );
-  mandelbrot_render( plot, image, &arguments );
+  mandelbrot_paint( plot, image, &arguments );
 
   log_verbose( &arguments, "Release memory used by calculated iterations" );
   mandelbrot_plot_close( plot );

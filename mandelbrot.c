@@ -1,8 +1,8 @@
 #include "mandelbrot.h"
 
-mandelbrot_parameters *mandelbrot_parameters_open() {
+mandelbrot_parameters *mandelbrot_parameters_open( void ) {
   mandelbrot_parameters *parameters =
-    memory_open( sizeof( mandelbrot_parameters ) );
+    memory_open( (size_t)sizeof( mandelbrot_parameters ) );
 
   if( parameters != NULL ) {
     parameters->arguments = NULL;
@@ -24,8 +24,8 @@ plot_t **mandelbrot_plot_open( struct arguments *args ) {
   int width = args->width;
   int height = args->height;
 
-  plot_t **plot = memory_open( sizeof( plot_t * ) * width );
-  plot[0] = memory_open( sizeof( plot_t ) * width * height );
+  plot_t **plot = memory_open( (size_t)sizeof( plot_t * ) * (size_t)width );
+  plot[0] = memory_open( (size_t)sizeof( plot_t ) * (size_t)width * (size_t)height );
 
   // Adjust the memory offsets
   for( int i = 0; i < width; i++ ) {
@@ -56,7 +56,6 @@ void *mandelbrot_compute( void *params ) {
   mandelbrot_parameters *parameters = params;
   struct arguments *args = parameters->arguments;
   struct region *region = parameters->region;
-  Image image = parameters->image;
   plot_t **plot = parameters->plot;
 
   int w = args->width;
@@ -72,7 +71,7 @@ void *mandelbrot_compute( void *params ) {
       double x_real = x1 + (x * 1.0 / w) * (x2 - x1);
       double y_imag = y1 + (y * 1.0 / h) * (y2 - y1);
 
-      double complex c = x_real + y_imag * I;
+      double complex c = x_real + y_imag * (_Complex double)I;
 
       plot[x][y] = mandelbrot_escape( c, 2, i );
     }
@@ -81,7 +80,7 @@ void *mandelbrot_compute( void *params ) {
   pthread_exit( NULL );
 }
 
-void mandelbrot_render( plot_t **plot, Image image, struct arguments *args ) {
+void mandelbrot_paint( plot_t **plot, Image image, struct arguments *args ) {
   int max_iterations = args->iterations;
 
   for( int x = 0; x < args->width; x++ ) {
@@ -91,7 +90,7 @@ void mandelbrot_render( plot_t **plot, Image image, struct arguments *args ) {
       log_verbose( args, "(%03d, %03d) = %f", x, y, iterations );
 
       double h = 0.0;
-      double s = 0.0;
+      double s = 1.0;
       double v = iterations / max_iterations;
 
       double r = 0;
@@ -100,7 +99,7 @@ void mandelbrot_render( plot_t **plot, Image image, struct arguments *args ) {
 
       colour_hsv_to_rgb( h, s, v, &r, &g, &b );
 
-      image_pixel( image, x, y, r * 255, g * 255, b * 255 );
+      image_pixel( image, x, y, (int)(r * 255), (int)(g * 255), (int)(b * 255) );
     }
   }
 }

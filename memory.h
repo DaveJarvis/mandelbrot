@@ -1,5 +1,5 @@
-#ifndef __H_MEMORY
-#define __H_MEMORY
+#ifndef H_MANDELBROT_MEMORY
+#define H_MANDELBROT_MEMORY
 
 #include <stdlib.h>
 

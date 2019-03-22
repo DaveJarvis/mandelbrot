@@ -1,5 +1,5 @@
-#ifndef __H_LOGGING
-#define __H_LOGGING
+#ifndef H_MANDELBROT_LOGGING
+#define H_MANDELBROT_LOGGING
 
 #include <inttypes.h>
 #include <math.h>
@@ -15,7 +15,9 @@
  *
  * @param arguments Command line argument options.
  * @param message Text to write to standard output.
+ * @see http://clang.llvm.org/docs/AttributeReference.html#format
  */
+__attribute__((__format__ (__printf__, 2, 0)))
 void log_verbose( struct arguments *arguments, char *message, ... );
 
 #endif

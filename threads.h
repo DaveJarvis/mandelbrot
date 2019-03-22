@@ -1,5 +1,5 @@
-#ifndef __H_THREADS
-#define __H_THREADS
+#ifndef H_MANDELBROT_THREADS
+#define H_MANDELBROT_THREADS
 
 #include <pthread.h>
 #include <unistd.h>

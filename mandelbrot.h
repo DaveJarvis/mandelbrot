@@ -1,5 +1,5 @@
-#ifndef __H_MANDELBROT
-#define __H_MANDELBROT
+#ifndef H_MANDELBROT_MANDELBROT
+#define H_MANDELBROT_MANDELBROT
 
 #include <complex.h>
 #include <math.h>
@@ -27,7 +27,7 @@ typedef struct mandelbrot_parameters {
 /**
  * Allocates enough memory to hold parameters for each distinct thread.
  */
-mandelbrot_parameters *mandelbrot_parameters_open();
+mandelbrot_parameters *mandelbrot_parameters_open( void );
 
 /**
  * Called to release memory allocated from thread_parameters_open.
@@ -63,12 +63,12 @@ void *mandelbrot_compute( void *params );
 double mandelbrot_nonlinear( int iterations, struct arguments *args );
 
 /**
- * Render the image using the plotted data.
+ * Paint the image using the plotted data.
  *
  * @param plot The data computed from mandelbrot_compute.
  * @param args Command line arguments to configure settings.
  */
-void mandelbrot_render( plot_t **plot, Image image, struct arguments *args );
+void mandelbrot_paint( plot_t **plot, Image image, struct arguments *args );
 
 #endif
 

@@ -1,7 +1,7 @@
 #include "threads.h"
 
 pthread_t *thread_open( int threads ) {
-  return memory_open( sizeof( pthread_t ) * threads );
+  return memory_open( (size_t)sizeof( pthread_t ) * (size_t)threads );
 }
 
 void thread_close( pthread_t *thread_ids ) {

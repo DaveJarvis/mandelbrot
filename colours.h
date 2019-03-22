@@ -1,5 +1,5 @@
-#ifndef __H_COLOURS
-#define __H_COLOURS
+#ifndef H_MANDELBROT_COLOURS
+#define H_MANDELBROT_COLOURS
 
 #include <math.h>
 
@@ -13,18 +13,12 @@ double colour_min( double a, double b, double c );
 /**
  * Stretches the colours by mapping the number of iterations to a colour.
  */
-int colour_normalise( int iterations );
-
-/**
- * Convert RGB to HSV.
- */
-void colour_rgb_to_hsv(
-  int r, int g, int b, double *h, double *s, double *v );
+double colour_normalise( double iterations );
 
 /**
  * Help convert HSV colour space to RGB colour space.
  */
-double colour_convert( double n, double h, double s, double v );
+double colour_frgb( double n, double h, double s, double v );
 
 /**
  * Convert HSV to RGB.
@@ -33,7 +27,9 @@ double colour_convert( double n, double h, double s, double v );
  * @param s Saturation between 0 and 1
  * @param v Value between 0 and 1
  *
- * @return r, g, b valued between 0 and 1.
+ * @param r Output red colour (0 to 1).
+ * @param g Output green colour (0 to 1).
+ * @param b Output blue colour (0 to 1).
  *
  * @see https://en.wikipedia.org/wiki/HSL_and_HSV
  */
