@@ -21,6 +21,9 @@ error_t parse_opt( int key, char *arg, struct argp_state *state ) {
     case 'i':
       arguments->iterations = arg ? atoi( arg ) : DEFAULT_ITERATIONS;
       break;
+    case 's':
+      arguments->samples = arg ? atoi( arg ) : DEFAULT_SAMPLES;
+      break;
     case 't':
       arguments->threads = arg ? atoi( arg ) : DEFAULT_THREADS;
       break;
@@ -49,6 +52,7 @@ void options_init( struct arguments *arguments ) {
   arguments->width = DEFAULT_IMAGE_WIDTH;
   arguments->height = DEFAULT_IMAGE_HEIGHT;
   arguments->iterations = DEFAULT_ITERATIONS;
+  arguments->samples = DEFAULT_SAMPLES;
   arguments->threads = DEFAULT_THREADS;
   arguments->cx = DEFAULT_PLOT_X;
   arguments->cy = DEFAULT_PLOT_Y;

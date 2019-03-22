@@ -56,6 +56,19 @@ plot_t mandelbrot_escape( double complex c, int power, int max_iterate ) {
 }
 */
 
+bool mandelbrot_inside( double complex c ) {
+  double absc = cabs( c );
+
+  double cardioid =
+    256 * pow( absc, 4 ) -
+    96 * pow( absc, 2 ) +
+    32 * creal( c ) - 3;
+
+  double bulb = 4 * pow( cabs( c + 1 ), 2 ) - 1;
+
+  return cardioid < 0 || bulb < 0;
+}
+
 plot_t mandelbrot_escape( double complex c, int power, int max_iterate ) {
   const double light_height = 1.5;
   const double light_angle = 45;
@@ -64,14 +77,20 @@ plot_t mandelbrot_escape( double complex c, int power, int max_iterate ) {
   // Escape boundary
   const int B = 1000;
 
-  double complex z = 0.0;
+  // Derivative of c
   double complex dC = 0.0;
+  double complex z = 0.0;
 
   double colour = 0.0;
 
   for( int i = 0; i < max_iterate; i++ ) {
     dC = 2.0 * dC * z + 1.0;
     z = cpow( z, power ) + c;
+
+    if( mandelbrot_inside( c ) ) {
+      colour = 0.5;
+      break;
+    }
 
     if( cabs( z ) > B * B ) {
       double complex u = z / dC;
@@ -98,7 +117,7 @@ void *mandelbrot_compute( void *params ) {
   int i = args->iterations;
   double zoom = 1 / args->zoom;
 
-  // Translate Cartesian x coordinate to the complex plane.
+  // Translate Cartesian coordinates to the complex plane.
   double x_real = region->x1 * zoom - w / 2.0 * zoom + args->cx;
   double y_start = region->y1 * zoom - h / 2.0 * zoom + args->cy;
 

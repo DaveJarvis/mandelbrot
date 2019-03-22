@@ -17,5 +17,7 @@
 
 #define DEFAULT_FILENAME "out.png"
 
+#define DEFAULT_SAMPLES 1
+
 #endif
 

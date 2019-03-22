@@ -32,6 +32,8 @@ static struct argp_option options[] = {
     "INTEGER", 0, "Image height" opt (DEFAULT_IMAGE_HEIGHT, "px" ), 0 },
   { "iterate", 'i',
     "INTEGER", 0, "Resolution depth" opt( DEFAULT_ITERATIONS, "" ), 0 },
+  { "sample", 's',
+    "INTEGER", 0, "Supersample antialiasing" opt( DEFAULT_SAMPLES, "" ), 0 },
   { "threads", 't',
     "INTEGER", 0, "Number of CPUs to use", 0 },
   { "plot-cx", 'x',
@@ -52,6 +54,7 @@ struct arguments {
   double cx, cy, zoom;
   char *filename;
   bool verbose;
+  int samples;
 };
 
 /**

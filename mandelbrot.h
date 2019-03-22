@@ -45,8 +45,22 @@ plot_t **mandelbrot_plot_open( struct arguments *args );
 void mandelbrot_plot_close( plot_t **plot );
 
 /**
+ * Determines whether the given point is within either the main cardioid or
+ * period-2 bulb.
+ *
+ * @param c The point on the complex plane to test.
+ * @return true The given point iterates to infinity.
+ *
+ * @see https://en.wikipedia.org/wiki/Mandelbrot_set
+ * @see http://iquilezles.untergrund.net/www/articles/msets/msets.pdf
+ */
+bool mandelbrot_inside( double complex c );
+
+/**
  * Returns a smoothed value representing the number of iterations before
  * exiting from the iteration (to infinity).
+ *
+ * @return A number to use for colouring or 0.0 if iterated to infinity.
  */
 plot_t mandelbrot_escape( double complex c, int power, int max_iterate );
 
