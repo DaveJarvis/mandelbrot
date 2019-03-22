@@ -24,8 +24,10 @@ plot_t **mandelbrot_plot_open( struct arguments *args ) {
   int width = args->width;
   int height = args->height;
 
-  plot_t **plot = memory_open( (size_t)sizeof( plot_t * ) * (size_t)width );
-  plot[0] = memory_open( (size_t)sizeof( plot_t ) * (size_t)width * (size_t)height );
+  plot_t **plot = memory_open(
+    (size_t)sizeof( plot_t * ) * (size_t)width );
+  plot[0] = memory_open(
+    (size_t)sizeof( plot_t ) * (size_t)width * (size_t)height );
 
   // Adjust the memory offsets
   for( int i = 0; i < width; i++ ) {
@@ -39,6 +41,7 @@ void mandelbrot_plot_close( plot_t **plot ) {
   memory_close( plot );
 }
 
+/*
 plot_t mandelbrot_escape( double complex c, int power, int max_iterate ) {
   const double B = 256.0;
 
@@ -51,6 +54,38 @@ plot_t mandelbrot_escape( double complex c, int power, int max_iterate ) {
 
   return i - log2( log2( cdot( z, z ) ) ) + 4.0;
 }
+*/
+
+plot_t mandelbrot_escape( double complex c, int power, int max_iterate ) {
+  const double light_height = 1.5;
+  const double light_angle = 45;
+  double complex v = cexp( 2.0 * light_angle * M_PI * (_Complex double)I );
+
+  // Escape boundary
+  const int B = 1000;
+
+  double complex z = 0.0;
+  double complex dC = 0.0;
+
+  double colour = 0.0;
+
+  for( int i = 0; i < max_iterate; i++ ) {
+    dC = 2.0 * dC * z + 1.0;
+    z = cpow( z, power ) + c;
+
+    if( cabs( z ) > B * B ) {
+      double complex u = z / dC;
+      u = u / cabs( u );
+
+      colour = cdot( u, v ) + light_height;
+      colour = colour / (1.0 + light_height);
+
+      break;
+    }
+  }
+
+  return colour;
+}
 
 void *mandelbrot_compute( void *params ) {
   mandelbrot_parameters *parameters = params;
@@ -61,18 +96,21 @@ void *mandelbrot_compute( void *params ) {
   int w = args->width;
   int h = args->height;
   int i = args->iterations;
-  double x1 = args->plot_r1;
-  double x2 = args->plot_r2;
-  double y1 = args->plot_i1;
-  double y2 = args->plot_i2;
+  double zoom = 1 / args->zoom;
 
-  for( int x = region->x1; x < region->x2; x++ ) {
-    for( int y = region->y1; y < region->y2; y++ ) {
-      double x_real = x1 + (x * 1.0 / w) * (x2 - x1);
-      double y_imag = y1 + (y * 1.0 / h) * (y2 - y1);
+  // Translate Cartesian x coordinate to the complex plane.
+  double x_real = region->x1 * zoom - w / 2.0 * zoom + args->cx;
+  double y_start = region->y1 * zoom - h / 2.0 * zoom + args->cy;
 
+  // Iterate over a region; store the Mandelbrot Set escape value per pixel.
+  for( int x = region->x1; x < region->x2; x++, x_real += zoom ) {
+    double y_imag = y_start;
+
+    for( int y = region->y1; y < region->y2; y++, y_imag += zoom ) {
+      // Create complex variable c for Mandelbrot Set equation z = z^2 + c
       double complex c = x_real + y_imag * (_Complex double)I;
 
+      // Compute the iterations (colour) from the escape.
       plot[x][y] = mandelbrot_escape( c, 2, i );
     }
   }
@@ -81,7 +119,7 @@ void *mandelbrot_compute( void *params ) {
 }
 
 void mandelbrot_paint( plot_t **plot, Image image, struct arguments *args ) {
-  int max_iterations = args->iterations;
+  double max_iterations = args->iterations;
 
   for( int x = 0; x < args->width; x++ ) {
     for( int y = 0; y < args->height; y++ ) {
@@ -90,8 +128,14 @@ void mandelbrot_paint( plot_t **plot, Image image, struct arguments *args ) {
       log_verbose( args, "(%03d, %03d) = %f", x, y, iterations );
 
       double h = 0.0;
-      double s = 1.0;
-      double v = iterations / max_iterations;
+      double s = 0.0;
+      double v = iterations;
+
+      if( v <= 0 ) {
+        h = 215.7;
+        s = 0.987;
+        v = 0.294;
+      }
 
       double r = 0;
       double g = 0;
@@ -99,7 +143,8 @@ void mandelbrot_paint( plot_t **plot, Image image, struct arguments *args ) {
 
       colour_hsv_to_rgb( h, s, v, &r, &g, &b );
 
-      image_pixel( image, x, y, (int)(r * 255), (int)(g * 255), (int)(b * 255) );
+      image_pixel( image, x, y,
+        (int)(r * 255), (int)(g * 255), (int)(b * 255) );
     }
   }
 }

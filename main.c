@@ -1,7 +1,7 @@
 #include "mandelbrot.h"
 
 /**
- * Draws the Mandelbrot Set as a colourful image.
+ * Draws the Mandelbrot Set as an image.
  */
 int main( int c, char **v ) {
   struct arguments arguments;
@@ -41,16 +41,16 @@ int main( int c, char **v ) {
     parameters->image = image;
     parameters->region = region;
 
-    /* Shared across all threads. */
+    // Shared across all threads.
     parameters->plot = plot;
 
-    /* Retain a reference for free'ing memory. */
+    // Retain a reference for free'ing memory.
     p[i] = parameters;
 
     log_verbose( &arguments, "Thread %03d region: (%04d, %04d)-(%04d, %04d)",
       i, region->x1, region->y1, region->x2, region->y2 );
 
-    /* Compute the iterations within a thread for a particular region. */
+    // Compute the iterations within a thread for a particular region.
     pthread_create( &thread_ids[i], NULL, mandelbrot_compute, parameters );
   }
 
