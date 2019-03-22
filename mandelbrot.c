@@ -64,7 +64,7 @@ bool mandelbrot_inside( double complex c ) {
     96 * pow( absc, 2 ) +
     32 * creal( c ) - 3;
 
-  double bulb = 4 * pow( cabs( c + 1 ), 2 ) - 1;
+  double bulb = 4 * pow( cabs( c + 1 ), 2 ) - 0.25;
 
   return cardioid < 0 || bulb < 0;
 }
@@ -75,7 +75,7 @@ plot_t mandelbrot_escape( double complex c, int power, int max_iterate ) {
   double complex v = cexp( 2.0 * light_angle * M_PI * (_Complex double)I );
 
   // Escape boundary
-  const int B = 1000;
+  const long B = 1000;
 
   // Derivative of c
   double complex dC = 0.0;
@@ -88,7 +88,6 @@ plot_t mandelbrot_escape( double complex c, int power, int max_iterate ) {
     z = cpow( z, power ) + c;
 
     if( mandelbrot_inside( c ) ) {
-      colour = 0.5;
       break;
     }
 
