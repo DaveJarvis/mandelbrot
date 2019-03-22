@@ -40,9 +40,9 @@ Use `./mandelbrot` to run.
 
 # Help
 
-Use `./mandelbrot --help` to view the command line options.
+Use `./mandelbrot --help` to display the command line options.
 
 # Result
 
-View `out.png` to see the output.
+Open `out.png` to see the output.
 
