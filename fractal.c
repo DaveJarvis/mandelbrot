@@ -199,6 +199,7 @@ void *fractal_compute( void *f ) {
       plot_t distance = fractal_escape( c, 2, i );
       fractal_colour( distance, &r, &g, &b );
 
+      // If antialiasing was requested...
       if( s > 1 ) {
         double rr = r;
         double rg = g;
