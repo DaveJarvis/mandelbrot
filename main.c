@@ -5,22 +5,21 @@
  * Draws the Mandelbrot Set as an image.
  */
 int main( int c, char **v ) {
-  struct arguments arguments;
-  mandelbrot_parameters fractal = arguments.fractal;
-
+  mandelbrot_parameters fractal;
   mandelbrot_parameters_init( &fractal );
+
+  struct arguments arguments;
+  arguments.fractal = &fractal;
   options_init( &arguments );
-
   argp_parse( &argp, c, v, 0, 0, &arguments );
-  log_info( "Start: %s", doc_program );
 
-  log_info( "Determine number of CPUs available" );
+  log_info( "%s", doc_program );
+
+  log_info( "Determine number of threads" );
   int threads = (int)thread_cpu_count( arguments.threads );
-  pthread_t *thread_ids = thread_open( threads );
 
-  log_info( "Use %d threads", threads );
-  log_info( "Use image dimensions %d x %d pixels",
-    fractal.width, fractal.height );
+  log_info( "Allocate memory for thread identifiers" );
+  pthread_t *thread_ids = thread_open( threads );
 
   log_info( "Allocate memory for fractal parameters" );
   mandelbrot_parameters **p =
@@ -28,9 +27,11 @@ int main( int c, char **v ) {
 
   log_info( "Allocate memory for canvas" );
   fractal.image = image_open( fractal.width, fractal.height );
+
+  log_info( "Allocate memory for escape iterations" );
   mandelbrot_plot_open( &fractal );
 
-  log_info( "Check for sufficient memory" );
+  log_info( "Check that memory allocations succeeded" );
   if( fractal.plot == NULL ||
       fractal.image == NULL ||
       p == NULL ||
@@ -41,6 +42,11 @@ int main( int c, char **v ) {
     thread_close( thread_ids );
     error_terminate( ERROR_MEMORY, ERROR_MEMORY_TEXT );
   }
+
+  log_info( "Setup: Canvas %d x %d pixels", fractal.width, fractal.height );
+  log_info( "Setup: (%f, %f) centre", fractal.cx, fractal.cy );
+  log_info( "Setup: %f zoom", fractal.zoom );
+  log_info( "Setup: %d threads", threads );
 
   log_info( "Start threads to calculate escape iterations" );
   for( int i = 0; i < threads; i++ ) {
@@ -72,23 +78,25 @@ int main( int c, char **v ) {
     mandelbrot_parameters_close( worker );
   }
 
-  log_info( "Release thread memory" );
+  log_info( "Release memory for fractal parameters" );
   memory_close( p );
+
+  log_info( "Release memory for thread identifiers" );
   thread_close( thread_ids );
 
-  log_info( "Render image using calculated iterations" );
+  log_info( "Paint fractal on canvas" );
   mandelbrot_paint( &fractal );
 
-  log_info( "Release memory used by calculated iterations" );
+  log_info( "Release memory for escape iterations" );
   mandelbrot_plot_close( &fractal );
 
-  log_info( "Save image to file" );
+  log_info( "Save fractal as: %s", arguments.filename );
   image_save( fractal.image, arguments.filename );
 
-  log_info( "Release memory for image" );
+  log_info( "Release memory for canvas" );
   image_close( fractal.image );
 
-  log_info( "Stop" );
+  log_info( "Done" );
   return 0;
 }
 

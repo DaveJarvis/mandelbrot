@@ -17,6 +17,7 @@ void mandelbrot_parameters_init( mandelbrot_parameters *fractal ) {
   fractal->height = DEFAULT_IMAGE_HEIGHT;
   fractal->iterations = DEFAULT_ITERATIONS;
   fractal->samples = DEFAULT_SAMPLES;
+
   fractal->cx = DEFAULT_PLOT_X;
   fractal->cy = DEFAULT_PLOT_Y;
   fractal->zoom = DEFAULT_PLOT_ZOOM;
@@ -28,6 +29,15 @@ void mandelbrot_parameters_init( mandelbrot_parameters *fractal ) {
 
 void mandelbrot_parameters_copy(
   mandelbrot_parameters *src, mandelbrot_parameters *dst ) {
+  dst->width = src->width;
+  dst->height = src->height;
+  dst->iterations = src->iterations;
+  dst->samples = src->samples;
+
+  dst->cx = src->cx;
+  dst->cy = src->cy;
+  dst->zoom = src->zoom;
+
   dst->plot = src->plot;
   dst->image = src->image;
 }
@@ -42,12 +52,20 @@ void mandelbrot_plot_open( mandelbrot_parameters *fractal ) {
 
   plot_t **plot = memory_open(
     (size_t)sizeof( plot_t * ) * (size_t)width );
-  plot[0] = memory_open(
-    (size_t)sizeof( plot_t ) * (size_t)width * (size_t)height );
 
-  // Adjust the memory offsets
-  for( int i = 0; i < width; i++ ) {
-    plot[ i ] = (*plot + height * i);
+  if( plot != NULL ) {
+    plot[0] = memory_open(
+      (size_t)sizeof( plot_t ) * (size_t)width * (size_t)height );
+
+    if( plot[0] == NULL ) {
+      memory_close( plot );
+    }
+    else {
+      // Adjust the memory offsets
+      for( int i = 0; i < width; i++ ) {
+        plot[ i ] = (*plot + height * i);
+      }
+    }
   }
 
   fractal->plot = plot;
@@ -134,6 +152,10 @@ void *mandelbrot_compute( void *f ) {
   log_debug( "Translate coordinates to complex plane" );
   double x_real = region->x1 * zoom - w / 2.0 * zoom + fractal->cx;
   double y_start = region->y1 * zoom - h / 2.0 * zoom + fractal->cy;
+
+  log_debug( "(%d, %d) - (%d, %d)",
+    region->x1, region->y1, region->x2, region->y2 );
+  log_debug( "(%f, %f) @ %f", fractal->cx, fractal->cy, fractal->zoom );
 
   log_debug( "Compute escape values for region" );
   for( int x = region->x1; x < region->x2; x++, x_real += zoom ) {

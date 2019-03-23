@@ -55,7 +55,7 @@ static struct argp_option options[] = {
 /* Used by main to communicate with parse_opt. */
 struct arguments {
   // Fractal rendering controls
-  mandelbrot_parameters fractal;
+  mandelbrot_parameters *fractal;
 
   // Application controls
   int threads;

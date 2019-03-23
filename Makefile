@@ -1,5 +1,5 @@
 CC = clang
-CFLAGS = -O3
+CFLAGS = -O3 -Weverything
 LIBS = -lgd -lpng -lz -ljpeg -lm -lpthread
 
 HEADERS = $(wildcard *.h)

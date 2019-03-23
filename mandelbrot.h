@@ -16,12 +16,11 @@
 #define DEFAULT_IMAGE_WIDTH 1024
 #define DEFAULT_IMAGE_HEIGHT 768
 #define DEFAULT_ITERATIONS 50
+#define DEFAULT_SAMPLES 1
 
 #define DEFAULT_PLOT_X    -0.75
 #define DEFAULT_PLOT_Y     0.00
 #define DEFAULT_PLOT_ZOOM  300
-
-#define DEFAULT_SAMPLES 1
 
 typedef double plot_t;
 
