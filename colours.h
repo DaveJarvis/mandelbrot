@@ -1,5 +1,5 @@
-#ifndef H_MANDELBROT_COLOURS
-#define H_MANDELBROT_COLOURS
+#ifndef H_FRACTAL_COLOURS
+#define H_FRACTAL_COLOURS
 
 #include <math.h>
 #include <stdbool.h>

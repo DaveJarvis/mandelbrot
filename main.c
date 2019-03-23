@@ -1,12 +1,12 @@
-#include "mandelbrot.h"
+#include "fractal.h"
 #include "options.h"
 
 /**
  * Draws the Mandelbrot Set as an image.
  */
 int main( int c, char **v ) {
-  mandelbrot_parameters fractal;
-  mandelbrot_parameters_init( &fractal );
+  fractal_parameters fractal;
+  fractal_parameters_init( &fractal );
 
   struct arguments arguments;
   arguments.fractal = &fractal;
@@ -15,6 +15,9 @@ int main( int c, char **v ) {
 
   log_info( "%s", doc_program );
 
+  log_info( "Validate fractal settings" );
+  fractal_parameters_validate( &fractal );
+
   log_info( "Determine number of threads" );
   int threads = (int)thread_cpu_count( arguments.threads );
 
@@ -22,21 +25,14 @@ int main( int c, char **v ) {
   pthread_t *thread_ids = thread_open( threads );
 
   log_info( "Allocate memory for fractal parameters" );
-  mandelbrot_parameters **p =
-    memory_open( (size_t)sizeof( mandelbrot_parameters * ) * (size_t)threads );
+  fractal_parameters **p =
+    memory_open( (size_t)sizeof( fractal_parameters * ) * (size_t)threads );
 
   log_info( "Allocate memory for canvas" );
   fractal.image = image_open( fractal.width, fractal.height );
 
-  log_info( "Allocate memory for escape iterations" );
-  mandelbrot_plot_open( &fractal );
-
   log_info( "Check that memory allocations succeeded" );
-  if( fractal.plot == NULL ||
-      fractal.image == NULL ||
-      p == NULL ||
-      thread_ids == NULL ) {
-    mandelbrot_plot_close( &fractal );
+  if( fractal.image == NULL || p == NULL || thread_ids == NULL ) {
     image_close( fractal.image );
     memory_close( p );
     thread_close( thread_ids );
@@ -50,8 +46,8 @@ int main( int c, char **v ) {
 
   log_info( "Start threads to calculate escape iterations" );
   for( int i = 0; i < threads; i++ ) {
-    mandelbrot_parameters *worker = mandelbrot_parameters_open();
-    mandelbrot_parameters_copy( &fractal, worker );
+    fractal_parameters *worker = fractal_parameters_open();
+    fractal_parameters_copy( &fractal, worker );
 
     struct region *region = image_region_open( fractal.image, i, threads );
 
@@ -64,18 +60,18 @@ int main( int c, char **v ) {
       i, region->x1, region->y1, region->x2, region->y2 );
 
     // Compute the iterations within a thread for a particular region.
-    pthread_create( &thread_ids[i], NULL, mandelbrot_compute, worker );
+    pthread_create( &thread_ids[i], NULL, fractal_compute, worker );
   }
 
   log_info( "Wait for threads to finish" );
   for( int i = 0; i < threads; i++ ) {
     pthread_join( thread_ids[i], NULL );
 
-    mandelbrot_parameters *worker = p[i];
+    fractal_parameters *worker = p[i];
     struct region *region = worker->region;
 
     image_region_close( region );
-    mandelbrot_parameters_close( worker );
+    fractal_parameters_close( worker );
   }
 
   log_info( "Release memory for fractal parameters" );
@@ -83,12 +79,6 @@ int main( int c, char **v ) {
 
   log_info( "Release memory for thread identifiers" );
   thread_close( thread_ids );
-
-  log_info( "Paint fractal on canvas" );
-  mandelbrot_paint( &fractal );
-
-  log_info( "Release memory for escape iterations" );
-  mandelbrot_plot_close( &fractal );
 
   log_info( "Save fractal as: %s", arguments.filename );
   image_save( fractal.image, arguments.filename );

@@ -1,5 +1,4 @@
 #include "options.h"
-#include "logging.h"
 
 const char *argp_program_version = "1.0.0";
 const char *argp_program_bug_address =
@@ -7,7 +6,7 @@ const char *argp_program_bug_address =
 
 error_t parse_opt( int key, char *arg, struct argp_state *state ) {
   struct arguments *arguments = state->input;
-  mandelbrot_parameters *fractal = arguments->fractal;
+  fractal_parameters *fractal = arguments->fractal;
 
   switch( key ) {
     // Options that control fractal rendering parameters

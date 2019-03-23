@@ -1,11 +1,11 @@
-#ifndef H_MANDELBROT_OPTIONS
-#define H_MANDELBROT_OPTIONS
+#ifndef H_FRACTAL_OPTIONS
+#define H_FRACTAL_OPTIONS
 
 #include <argp.h>
 #include <stdbool.h>
 #include <stdlib.h>
 
-#include "mandelbrot.h"
+#include "fractal.h"
 
 #define DEFAULT_VERBOSE false
 #define DEFAULT_FILENAME "out.png"
@@ -55,7 +55,7 @@ static struct argp_option options[] = {
 /* Used by main to communicate with parse_opt. */
 struct arguments {
   // Fractal rendering controls
-  mandelbrot_parameters *fractal;
+  fractal_parameters *fractal;
 
   // Application controls
   int threads;

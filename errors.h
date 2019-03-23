@@ -1,5 +1,5 @@
-#ifndef H_MANDELBROT_ERRORS
-#define H_MANDELBROT_ERRORS
+#ifndef H_FRACTAL_ERRORS
+#define H_FRACTAL_ERRORS
 
 #include <stdlib.h>
 #include <stdio.h>

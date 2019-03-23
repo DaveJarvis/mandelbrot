@@ -1,5 +1,5 @@
-#ifndef H_MANDELBROT_LOGGING
-#define H_MANDELBROT_LOGGING
+#ifndef H_FRACTAL_LOGGING
+#define H_FRACTAL_LOGGING
 
 #include <inttypes.h>
 #include <math.h>

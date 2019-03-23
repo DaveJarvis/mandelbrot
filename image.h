@@ -1,5 +1,5 @@
-#ifndef H_MANDELBROT_IMAGE
-#define H_MANDELBROT_IMAGE
+#ifndef H_FRACTAL_IMAGE
+#define H_FRACTAL_IMAGE
 
 #include <math.h>
 #include <gd.h>

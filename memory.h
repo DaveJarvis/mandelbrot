@@ -1,5 +1,5 @@
-#ifndef H_MANDELBROT_MEMORY
-#define H_MANDELBROT_MEMORY
+#ifndef H_FRACTAL_MEMORY
+#define H_FRACTAL_MEMORY
 
 #include <stdlib.h>
 #include <stdio.h>

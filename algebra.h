@@ -1,5 +1,5 @@
-#ifndef H_MANDELBROT_ALGEBRA
-#define H_MANDELBROT_ALGEBRA
+#ifndef H_FRACTAL_ALGEBRA
+#define H_FRACTAL_ALGEBRA
 
 #include <complex.h>
 #include <math.h>
