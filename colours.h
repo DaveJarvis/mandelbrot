@@ -5,19 +5,12 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "algebra.h"
-
 #define COLOUR_HUE_EDGE_LEN (65537L)
 
 /**
  * Returns the lowest value of the given parameters.
  */
 double colour_min( double a, double b, double c );
-
-/**
- * Stretches the colours by mapping the number of iterations to a colour.
- */
-double colour_normalise( double iterations );
 
 /**
  * Help convert HSV colour space to RGB colour space.

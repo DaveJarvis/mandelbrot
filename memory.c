@@ -1,7 +1,5 @@
 #include "memory.h"
 
-#include <stdio.h>
-
 void *memory_open( size_t size ) {
   return malloc( size );
 }

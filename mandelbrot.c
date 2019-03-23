@@ -1,28 +1,44 @@
+#include "colours.h"
 #include "mandelbrot.h"
 
 mandelbrot_parameters *mandelbrot_parameters_open( void ) {
-  mandelbrot_parameters *parameters =
+  mandelbrot_parameters *fractal =
     memory_open( (size_t)sizeof( mandelbrot_parameters ) );
 
-  if( parameters != NULL ) {
-    parameters->arguments = NULL;
-    parameters->region = NULL;
-    parameters->image = NULL;
-    parameters->plot = NULL;
+  if( fractal != NULL ) {
+    mandelbrot_parameters_init( fractal );
   }
 
-  return parameters;
+  return fractal;
 }
 
-void mandelbrot_parameters_close( mandelbrot_parameters *parameters ) {
-  if( parameters != NULL ) {
-    memory_close( parameters );
-  }
+void mandelbrot_parameters_init( mandelbrot_parameters *fractal ) {
+  fractal->width = DEFAULT_IMAGE_WIDTH;
+  fractal->height = DEFAULT_IMAGE_HEIGHT;
+  fractal->iterations = DEFAULT_ITERATIONS;
+  fractal->samples = DEFAULT_SAMPLES;
+  fractal->cx = DEFAULT_PLOT_X;
+  fractal->cy = DEFAULT_PLOT_Y;
+  fractal->zoom = DEFAULT_PLOT_ZOOM;
+
+  fractal->region = NULL;
+  fractal->plot = NULL;
+  fractal->image = NULL;
 }
 
-plot_t **mandelbrot_plot_open( struct arguments *args ) {
-  int width = args->width;
-  int height = args->height;
+void mandelbrot_parameters_copy(
+  mandelbrot_parameters *src, mandelbrot_parameters *dst ) {
+  dst->plot = src->plot;
+  dst->image = src->image;
+}
+
+void mandelbrot_parameters_close( mandelbrot_parameters *fractal ) {
+  memory_close( fractal );
+}
+
+void mandelbrot_plot_open( mandelbrot_parameters *fractal ) {
+  int width = fractal->width;
+  int height = fractal->height;
 
   plot_t **plot = memory_open(
     (size_t)sizeof( plot_t * ) * (size_t)width );
@@ -34,11 +50,11 @@ plot_t **mandelbrot_plot_open( struct arguments *args ) {
     plot[ i ] = (*plot + height * i);
   }
 
-  return plot;
+  fractal->plot = plot;
 }
 
-void mandelbrot_plot_close( plot_t **plot ) {
-  memory_close( plot );
+void mandelbrot_plot_close( mandelbrot_parameters *fractal ) {
+  memory_close( fractal->plot );
 }
 
 /*
@@ -105,22 +121,21 @@ plot_t mandelbrot_escape( double complex c, int power, int max_iterate ) {
   return colour;
 }
 
-void *mandelbrot_compute( void *params ) {
-  mandelbrot_parameters *parameters = params;
-  struct arguments *args = parameters->arguments;
-  struct region *region = parameters->region;
-  plot_t **plot = parameters->plot;
+void *mandelbrot_compute( void *f ) {
+  mandelbrot_parameters *fractal = f;
+  struct region *region = fractal->region;
+  plot_t **plot = fractal->plot;
 
-  int w = args->width;
-  int h = args->height;
-  int i = args->iterations;
-  double zoom = 1 / args->zoom;
+  int w = fractal->width;
+  int h = fractal->height;
+  int i = fractal->iterations;
+  double zoom = 1 / fractal->zoom;
 
-  // Translate Cartesian coordinates to the complex plane.
-  double x_real = region->x1 * zoom - w / 2.0 * zoom + args->cx;
-  double y_start = region->y1 * zoom - h / 2.0 * zoom + args->cy;
+  log_debug( "Translate coordinates to complex plane" );
+  double x_real = region->x1 * zoom - w / 2.0 * zoom + fractal->cx;
+  double y_start = region->y1 * zoom - h / 2.0 * zoom + fractal->cy;
 
-  // Iterate over a region; store the Mandelbrot Set escape value per pixel.
+  log_debug( "Compute escape values for region" );
   for( int x = region->x1; x < region->x2; x++, x_real += zoom ) {
     double y_imag = y_start;
 
@@ -136,14 +151,14 @@ void *mandelbrot_compute( void *params ) {
   pthread_exit( NULL );
 }
 
-void mandelbrot_paint( plot_t **plot, Image image, struct arguments *args ) {
-  double max_iterations = args->iterations;
+void mandelbrot_paint( mandelbrot_parameters *fractal ) {
+  plot_t **plot = fractal->plot;
+  Image image = fractal->image;
+  double max_iterations = fractal->iterations;
 
-  for( int x = 0; x < args->width; x++ ) {
-    for( int y = 0; y < args->height; y++ ) {
+  for( int x = 0; x < fractal->width; x++ ) {
+    for( int y = 0; y < fractal->height; y++ ) {
       plot_t iterations = plot[x][y];
-
-      log_verbose( args, "(%03d, %03d) = %f", x, y, iterations );
 
       double h = 0.0;
       double s = 0.0;

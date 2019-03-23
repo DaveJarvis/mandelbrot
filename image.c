@@ -1,5 +1,8 @@
 #include "image.h"
 
+#include "colours.h"
+#include "memory.h"
+
 Image image_open( int width, int height ) {
   return gdImageCreateTrueColor( width, height );
 }
@@ -41,9 +44,7 @@ struct region *image_region_open( Image image, int n, int regions ) {
 }
 
 void image_region_close( struct region *region ) {
-  if( region != NULL ) {
-    memory_close( region );
-  }
+  memory_close( region );
 }
 
 void image_pixel( Image image, int x, int y, int r, int g, int b ) {

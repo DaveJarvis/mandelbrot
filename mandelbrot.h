@@ -11,13 +11,25 @@
 #include "image.h"
 #include "logging.h"
 #include "memory.h"
-#include "options.h"
 #include "threads.h"
+
+#define DEFAULT_IMAGE_WIDTH 1024
+#define DEFAULT_IMAGE_HEIGHT 768
+#define DEFAULT_ITERATIONS 50
+
+#define DEFAULT_PLOT_X    -0.75
+#define DEFAULT_PLOT_Y     0.00
+#define DEFAULT_PLOT_ZOOM  300
+
+#define DEFAULT_SAMPLES 1
 
 typedef double plot_t;
 
 typedef struct mandelbrot_parameters {
-  struct arguments *arguments;
+  int width, height;
+  int iterations, samples;
+  double cx, cy, zoom;
+
   struct region *region;
   plot_t **plot;
 
@@ -30,19 +42,30 @@ typedef struct mandelbrot_parameters {
 mandelbrot_parameters *mandelbrot_parameters_open( void );
 
 /**
+ * Initializes memory for the fractal parameters.
+ */
+void mandelbrot_parameters_init( mandelbrot_parameters *fractal );
+
+/**
+ * Initializes the destination parameters using the source parameters.
+ */
+void mandelbrot_parameters_copy(
+  mandelbrot_parameters *src, mandelbrot_parameters *dst );
+
+/**
  * Called to release memory allocated from thread_parameters_open.
  */
-void mandelbrot_parameters_close( mandelbrot_parameters *parameters );
+void mandelbrot_parameters_close( mandelbrot_parameters *fractal );
 
 /**
  * Called to allocate memory for storing histogram of interation values.
  */
-plot_t **mandelbrot_plot_open( struct arguments *args );
+void mandelbrot_plot_open( mandelbrot_parameters *fractal );
 
 /**
  * Called to deallocate memory of interation values.
  */
-void mandelbrot_plot_close( plot_t **plot );
+void mandelbrot_plot_close( mandelbrot_parameters *fractal );
 
 /**
  * Determines whether the given point is within either the main cardioid or
@@ -67,22 +90,14 @@ plot_t mandelbrot_escape( double complex c, int power, int max_iterate );
 /**
  * Run by a single thread to fill in part of a Mandelbrot Set image.
  *
- * @param params The mandelbrot_parameters structure.
+ * @param f The mandelbrot_parameters fractal controls.
  */
-void *mandelbrot_compute( void *params );
-
-/**
- * Non-linear function to smooth the iteration values.
- */
-double mandelbrot_nonlinear( int iterations, struct arguments *args );
+void *mandelbrot_compute( void *f );
 
 /**
  * Paint the image using the plotted data.
- *
- * @param plot The data computed from mandelbrot_compute.
- * @param args Command line arguments to configure settings.
  */
-void mandelbrot_paint( plot_t **plot, Image image, struct arguments *args );
+void mandelbrot_paint( mandelbrot_parameters *fractal );
 
 #endif
 

@@ -1,5 +1,5 @@
-#include "constants.h"
 #include "options.h"
+#include "logging.h"
 
 const char *argp_program_version = "1.0.0";
 const char *argp_program_bug_address =
@@ -8,36 +8,44 @@ const char *argp_program_bug_address =
 error_t parse_opt( int key, char *arg, struct argp_state *state ) {
   struct arguments *arguments = state->input;
 
+  mandelbrot_parameters fractal = arguments->fractal;
+
   switch( key ) {
-    case 'v':
-      arguments->verbose = true;
-      break;
+    // Options that control fractal rendering parameters
     case 'w':
-      arguments->width = arg ? atoi( arg ) : DEFAULT_IMAGE_WIDTH;
+      fractal.width = arg ? atoi( arg ) : DEFAULT_IMAGE_WIDTH;
       break;
     case 'h':
-      arguments->height = arg ? atoi( arg ) : DEFAULT_IMAGE_HEIGHT;
+      fractal.height = arg ? atoi( arg ) : DEFAULT_IMAGE_HEIGHT;
       break;
     case 'i':
-      arguments->iterations = arg ? atoi( arg ) : DEFAULT_ITERATIONS;
+      fractal.iterations = arg ? atoi( arg ) : DEFAULT_ITERATIONS;
       break;
     case 's':
-      arguments->samples = arg ? atoi( arg ) : DEFAULT_SAMPLES;
+      fractal.samples = arg ? atoi( arg ) : DEFAULT_SAMPLES;
+      break;
+    case 'x':
+      fractal.cx = arg ? atof( arg ) : DEFAULT_PLOT_X;
+      break;
+    case 'y':
+      fractal.cy = arg ? atof( arg ) : DEFAULT_PLOT_Y;
+      break;
+    case 'z':
+      fractal.zoom = arg ? atof( arg ) : DEFAULT_PLOT_ZOOM;
+      break;
+
+    // Options that affect program behaviour
+    case 'd':
+      logging_set_level( LOG_DEBUG );
+      break;
+    case 'o':
+      arguments->filename = arg;
       break;
     case 't':
       arguments->threads = arg ? atoi( arg ) : DEFAULT_THREADS;
       break;
-    case 'x':
-      arguments->cx = arg ? atof( arg ) : DEFAULT_PLOT_X;
-      break;
-    case 'y':
-      arguments->cy = arg ? atof( arg ) : DEFAULT_PLOT_Y;
-      break;
-    case 'z':
-      arguments->zoom = arg ? atof( arg ) : DEFAULT_PLOT_ZOOM;
-      break;
-    case 'o':
-      arguments->filename = arg;
+    case 'v':
+      logging_set_level( LOG_INFO );
       break;
 
     default:
@@ -48,15 +56,7 @@ error_t parse_opt( int key, char *arg, struct argp_state *state ) {
 }
 
 void options_init( struct arguments *arguments ) {
-  arguments->verbose = DEFAULT_VERBOSE;
-  arguments->width = DEFAULT_IMAGE_WIDTH;
-  arguments->height = DEFAULT_IMAGE_HEIGHT;
-  arguments->iterations = DEFAULT_ITERATIONS;
-  arguments->samples = DEFAULT_SAMPLES;
-  arguments->threads = DEFAULT_THREADS;
-  arguments->cx = DEFAULT_PLOT_X;
-  arguments->cy = DEFAULT_PLOT_Y;
-  arguments->zoom = DEFAULT_PLOT_ZOOM;
   arguments->filename = DEFAULT_FILENAME;
+  arguments->threads = DEFAULT_THREADS;
 }
 

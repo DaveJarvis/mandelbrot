@@ -2,6 +2,7 @@
 #define H_MANDELBROT_MEMORY
 
 #include <stdlib.h>
+#include <stdio.h>
 
 /**
  * Allocates the given amount of memory.

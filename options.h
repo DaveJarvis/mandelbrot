@@ -5,7 +5,10 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#include "constants.h"
+#include "mandelbrot.h"
+
+#define DEFAULT_VERBOSE false
+#define DEFAULT_FILENAME "out.png"
 
 #define xstr(x) #x
 #define str(x) xstr(x)
@@ -24,8 +27,10 @@ static char doc_args[] = "";
 
 /* The options we understand. */
 static struct argp_option options[] = {
+  { "debug", 'd',
+    0, 0, "Write program line numbers standard output", 0 },
   { "verbose", 'v',
-    0, 0, "Write algorithmic details to standard output", 0 },
+    0, 0, "Write algorithm to standard output", 0 },
   { "width", 'w',
     "INTEGER", 0, "Image width" opt( DEFAULT_IMAGE_WIDTH, "px" ), 0 },
   { "height", 'h',
@@ -40,7 +45,7 @@ static struct argp_option options[] = {
     "DECIMAL", 0, "Central coordinate x" opt( DEFAULT_PLOT_X, "" ), 0 },
   { "plot-cy", 'y',
     "DECIMAL", 0, "Central coordinate y" opt( DEFAULT_PLOT_Y, "" ), 0 },
-  { "zoom",    'z',
+  { "zoom", 'z',
     "DECIMAL", 0, "Zoom factor" opt( DEFAULT_PLOT_ZOOM, "" ), 0 },
   { "output", 'o',
     "FILE",    0, "Image filename" opt( DEFAULT_FILENAME, "" ), 0 },
@@ -49,12 +54,12 @@ static struct argp_option options[] = {
 
 /* Used by main to communicate with parse_opt. */
 struct arguments {
-  int width, height;
-  int threads, iterations;
-  double cx, cy, zoom;
+  // Fractal rendering controls
+  mandelbrot_parameters fractal;
+
+  // Application controls
+  int threads;
   char *filename;
-  bool verbose;
-  int samples;
 };
 
 /**

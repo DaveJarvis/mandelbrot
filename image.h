@@ -4,10 +4,6 @@
 #include <math.h>
 #include <gd.h>
 
-#include "colours.h"
-#include "options.h"
-#include "memory.h"
-
 struct region {
   int x1;
   int y1;

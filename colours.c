@@ -1,13 +1,10 @@
+#include "algebra.h"
 #include "colours.h"
 
 double colour_min( double a, double b, double c ) {
   return a < b
     ? (a < c ? a : c)
     : (b < c ? b : c);
-}
-
-double colour_normalise( double iterations ) {
-  return iterations;
 }
 
 void colour_hsv_to_rgb(
@@ -39,20 +36,6 @@ void colour_hsv_to_rgb(
 }
 
 /*
-void colour_hsv_to_rgb(
-  double h, double s, double v, double *r, double *g, double *b ) {
-
-  if( s <= 0.0 || v <= 0.0 ) {
-    *r = v;
-    *g = v;
-    *b = v;
-  }
-  else {
-    long d = ((s * v) >> 16) + 1;
-  }
-}
-*/
-
 void hsv2rgb(
   uint32_t h, uint16_t s, uint8_t v, uint8_t *r, uint8_t *g, uint8_t *b) {
   if (s == 0 || v == 0) {
@@ -63,7 +46,7 @@ void hsv2rgb(
   }
 
   uint32_t delta = ((s * v) >> 16) + 1;
-  uint8_t min = v - delta;
+  uint8_t min = (uint8_t)(v - delta);
   uint8_t *mid;
 
   if (h >= COLOUR_HUE_EDGE_LEN * 4) {
@@ -183,4 +166,5 @@ void rgb2hsv(
 
   *h += edge * COLOUR_HUE_EDGE_LEN;
 }
+*/
 
