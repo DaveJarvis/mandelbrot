@@ -32,7 +32,7 @@ static struct argp_option options[] = {
   { "verbose", 'v',
     0, 0, "Write algorithm to standard output", 0 },
   { "palette", 'p',
-    "STRING", 0, "Palette function for fractal", 0 },
+    "STRING", 0, "Palette function" opt( DEFAULT_COLOUR_BASE, "" ), 0 },
   { "width", 'w',
     "INTEGER", 0, "Image width" opt( DEFAULT_IMAGE_WIDTH, "px" ), 0 },
   { "height", 'h',
