@@ -33,21 +33,5 @@ double colour_frgb( double n, double h, double s, double v );
 void colour_hsv_to_rgb(
   double h, double s, double v, double *r, double *g, double *b );
 
-/** 
- * Integer-based RGB to HSV colour conversion.
- *
- * https://bitbucket.org/chernov/colormath/src/default/
- */
-void rgb2hsv(
-  uint8_t r, uint8_t g, uint8_t b, uint32_t *h, uint16_t *s, uint8_t *v );
-
-/** 
- * Integer-based HSV to RGB colour conversion.
- *
- * https://bitbucket.org/chernov/colormath/src/default/
- */
-void hsv2rgb(
-  uint32_t h, uint16_t s, uint8_t v, uint8_t *r, uint8_t *g, uint8_t *b);
-
 #endif
 
