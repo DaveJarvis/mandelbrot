@@ -11,6 +11,9 @@ struct region {
   int y2;
 };
 
+/**
+ * Hide the library data type.
+ */
 typedef gdImagePtr Image;
 
 /**
@@ -18,6 +21,8 @@ typedef gdImagePtr Image;
  *
  * @param width The number of pixels from left to right.
  * @param height The number of pixels from top to bottom.
+ *
+ * @return Pointer to the canvas.
  */
 Image image_open( int width, int height );
 
@@ -30,6 +35,8 @@ Image image_open( int width, int height );
  * @param image The image that was opened for drawing.
  * @param n The region index (0 through regions - 1).
  * @param regions The number of regions to create.
+ *
+ * @return Pointer to the region boundary.
  */
 struct region *image_region_open( Image image, int n, int regions );
 
@@ -39,14 +46,6 @@ struct region *image_region_open( Image image, int n, int regions );
  * @param region The region to deallocate.
  */
 void image_region_close( struct region *region );
-
-/**
- * Create a new grayscale palette colour index for the given image.
- *
- * @param image Pointer to the image structure.
- * @param s Grayscale colour value.
- */
-int image_colour_grayscale( Image image, int s );
 
 /**
  * Draw a pixel on the image at the given coordinates with the given
@@ -60,11 +59,16 @@ void image_pixel( Image image, int x, int y, int r, int g, int b );
 
 /**
  * Export the given image to the specified file.
+ *
+ * @param image The painted canvas to export.
+ * @param filename Write the canvas to this file.
  */
 void image_save( Image image, char *filename );
 
 /**
- * Release the image memory.
+ * Release image memory.
+ *
+ * @param image The allocated canvas memory.
  */
 void image_close( Image image );
 

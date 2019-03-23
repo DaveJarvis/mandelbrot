@@ -7,6 +7,8 @@
 /**
  * Allocates the given amount of memory.
  *
+ * @param size The number of bytes to allocate.
+ *
  * @return NULL The memory could not be allocated.
  */
 void *memory_open( size_t size );

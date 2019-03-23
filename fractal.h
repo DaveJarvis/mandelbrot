@@ -26,8 +26,6 @@
 #define DEFAULT_PLOT_Y     0.00
 #define DEFAULT_PLOT_ZOOM  300
 
-typedef double plot_t;
-
 typedef struct fractal_parameters {
   int width, height;
   int iterations, samples;
@@ -96,7 +94,7 @@ double fractal_distance( int i, double complex z, double complex dC );
  *
  * @return A number to use for colouring or 0.0 if iterated to infinity.
  */
-plot_t fractal_escape( double complex c, int power, int max_iterate );
+double fractal_escape( double complex c, int power, int max_iterate );
 
 /**
  * Run by a single thread to fill in part of a Mandelbrot Set image.

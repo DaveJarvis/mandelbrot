@@ -9,13 +9,12 @@
 
 /**
  * Returns the lowest value of the given parameters.
+ *
+ * @param a Compared against b and c.
+ * @param b Compared against a and c.
+ * @param c Compared against a and b.
  */
 double colour_min( double a, double b, double c );
-
-/**
- * Help convert HSV colour space to RGB colour space.
- */
-double colour_frgb( double n, double h, double s, double v );
 
 /**
  * Convert HSV to RGB.

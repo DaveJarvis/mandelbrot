@@ -54,7 +54,7 @@ void fractal_parameters_close( fractal_parameters *fractal ) {
 }
 
 /*
-plot_t fractal_escape( double complex c, int power, int max_iterate ) {
+double fractal_escape( double complex c, int power, int max_iterate ) {
   const double B = 256.0;
 
   double complex z = 0;
@@ -67,7 +67,7 @@ plot_t fractal_escape( double complex c, int power, int max_iterate ) {
   return i - log2( log2( cdot( z, z ) ) ) + 4.0;
 }
 
-plot_t fractal_escape( double complex c, int power, int max_iterate ) {
+double fractal_escape( double complex c, int power, int max_iterate ) {
   const double light_height = 1.5;
   const double light_angle = 45;
   double complex v = cexp( 2.0 * light_angle * M_PI * (_Complex double)I );
@@ -140,7 +140,7 @@ double fractal_distance( UNUSED int i, double complex z, double complex dC ) {
   return normal / (1.0 + light_height);
 }
 
-plot_t fractal_escape( double complex c, int power, int max_iterate ) {
+double fractal_escape( double complex c, int power, int max_iterate ) {
   // Escape boundary
   const long B = 1000;
 
@@ -196,7 +196,7 @@ void *fractal_compute( void *f ) {
       double complex c = x_real + y_imag * (_Complex double)I;
 
       // Compute the iterations (colour) from the escape.
-      plot_t distance = fractal_escape( c, 2, i );
+      double distance = fractal_escape( c, 2, i );
       fractal_colour( distance, &r, &g, &b );
 
       // If antialiasing was requested...

@@ -19,6 +19,8 @@ enum { LOG_TRACE, LOG_DEBUG, LOG_INFO, LOG_WARN, LOG_ERROR, LOG_FATAL };
 /**
  * Changes the logging level to give different levels of information while
  * the program is running.
+ *
+ * @param level The new logging level.
  */
 void logging_set_level( int level );
 
@@ -32,6 +34,7 @@ void logging_set_level( int level );
  * @param src Name of the source file containing the logged message.
  * @param line Line number in the source file.
  * @param message Text to write to standard output.
+ *
  * @see http://clang.llvm.org/docs/AttributeReference.html#format
  */
 __attribute__((__format__ (__printf__, 4, 0)))

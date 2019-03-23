@@ -64,6 +64,11 @@ struct arguments {
 
 /**
  * Parse a single option.
+ *
+ * @param key The single-letter command line parameter key value.
+ * @param arg The value provided for the command line parameter (if any).
+ *
+ * @return 0 on success.
  */
 error_t parse_opt( int key, char *arg, struct argp_state *state );
 
@@ -71,7 +76,9 @@ static struct argp argp = {
   options, parse_opt, doc_args, doc_program, NULL, NULL, NULL };
 
 /**
- * Sets structure elements to default values.
+ * Sets application default values, not including the fractal configuration.
+ *
+ * @param arguments Parameters to control threads, output, etc.
  */
 void options_init( struct arguments *arguments );
 

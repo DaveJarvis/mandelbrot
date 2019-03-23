@@ -9,10 +9,10 @@
 #define ERROR_MEMORY_TEXT "Out of memory"
 
 /**
- * Exits the application with the given error level.
+ * Exits the application with the given exit code.
  *
- * @param exit_code The program exit code.
- * @param message The error message to write to standard error.
+ * @param exit_code The program error level.
+ * @param message The reason for termination (written to standard error).
  */
 noreturn void error_terminate( int exit_code, char *message );
 
