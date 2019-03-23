@@ -153,10 +153,6 @@ void *mandelbrot_compute( void *f ) {
   double x_real = region->x1 * zoom - w / 2.0 * zoom + fractal->cx;
   double y_start = region->y1 * zoom - h / 2.0 * zoom + fractal->cy;
 
-  log_debug( "(%d, %d) - (%d, %d)",
-    region->x1, region->y1, region->x2, region->y2 );
-  log_debug( "(%f, %f) @ %f", fractal->cx, fractal->cy, fractal->zoom );
-
   log_debug( "Compute escape values for region" );
   for( int x = region->x1; x < region->x2; x++, x_real += zoom ) {
     double y_imag = y_start;
