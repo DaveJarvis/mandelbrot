@@ -23,6 +23,7 @@ void fractal_parameters_init( fractal_parameters *fractal ) {
 
   fractal->region = NULL;
   fractal->image = NULL;
+  fractal->colour_base = NULL;
 
   random_init( fractal->random_state );
 }
@@ -47,6 +48,7 @@ void fractal_parameters_copy(
   dst->zoom = src->zoom;
 
   dst->image = src->image;
+  dst->colour_base = src->colour_base;
 }
 
 void fractal_parameters_close( fractal_parameters *fractal ) {
@@ -197,7 +199,7 @@ void *fractal_compute( void *f ) {
 
       // Compute the iterations (colour) from the escape.
       double distance = fractal_escape( c, 2, i );
-      fractal_colour( distance, &r, &g, &b );
+      fractal_colour( fractal->colour_base, distance, &r, &g, &b );
 
       // If antialiasing was requested...
       if( s > 1 ) {
@@ -219,7 +221,7 @@ void *fractal_compute( void *f ) {
           double tb = 0;
 
           double rdistance = fractal_escape( rc, 2, i );
-          fractal_colour( rdistance, &tr, &tg, &tb );
+          fractal_colour( fractal->colour_base, rdistance, &tr, &tg, &tb );
           rr += tr;
           rg += tg;
           rb += tb;
@@ -238,15 +240,16 @@ void *fractal_compute( void *f ) {
   pthread_exit( NULL );
 }
 
-void fractal_colour( double plotted, double *r, double *g, double *b ) {
+void fractal_colour( colour *colour_base,
+  double plotted, double *r, double *g, double *b ) {
   double h = 0.0;
   double s = 0.0;
   double v = plotted;
 
   if( v <= 0 ) {
-    h = 215.7;
-    s = 0.987;
-    v = 0.694;
+    h = colour_base->h;
+    s = colour_base->s;
+    v = colour_base->v;
   }
 
   colour_hsv_to_rgb( h, s, v, r, g, b );

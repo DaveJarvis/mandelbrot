@@ -7,6 +7,36 @@ double colour_min( double a, double b, double c ) {
     : (b < c ? b : c);
 }
 
+colour *colour_open( void ) {
+  colour *colour = memory_open( (size_t)sizeof( colour ) );
+
+  if( colour != NULL ) {
+    colour_parse( DEFAULT_COLOUR_BASE, colour );
+  }
+
+  return colour;
+}
+
+void colour_close( colour *colour ) {
+  memory_close( colour );
+}
+
+void colour_parse( char *f, colour *colour ) {
+  const char *hsv = "hsv";
+  char name[3];
+  double v1;
+  double v2;
+  double v3;
+
+  sscanf( f, "%3s(%lf,%lf,%lf)", name, &v1, &v2, &v3 );
+
+  if( strstr( (const char *)name, hsv ) ) {
+    colour->h = v1;
+    colour->s = v2;
+    colour->v = v3;
+  }
+}
+
 void colour_hsv_to_rgb(
   double h, double s, double v, double *r, double *g, double *b ) {
 

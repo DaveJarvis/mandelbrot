@@ -4,8 +4,24 @@
 #include <math.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <string.h>
 
-#define COLOUR_HUE_EDGE_LEN (65537L)
+#include "memory.h"
+
+#define DEFAULT_COLOUR_BASE "hsv(215.7,0.987,0.694)"
+
+/**
+ * Provides the fractal's base colour.
+ */
+typedef struct colour {
+  /** Hue (0 to 360) */
+  double h;
+  /** Saturation (0 to 1) */
+  double s;
+  /** Value (0 to 1) */
+  double v;
+} colour;
 
 /**
  * Returns the lowest value of the given parameters.
@@ -15,6 +31,35 @@
  * @param c Compared against a and b.
  */
 double colour_min( double a, double b, double c );
+
+/**
+ * Allocates memory for a colour structure and initialises it to a default
+ * value.
+ *
+ * @return Memory allocated for a colour structure.
+ */
+colour *colour_open( void );
+
+/**
+ * Releases memory allocated to a colour structure.
+ *
+ * @param colour The reference to deallocate.
+ */
+void colour_close( colour *colour );
+
+/**
+ * Parses a colour string into its equivalent colour. The string f takes the
+ * form `hsv(h,s,v)` where:
+ *
+ * - `hsv` is the function
+ * - `h` is the hue (0 to 360)
+ * - `s` is the saturation (0 to 1)
+ * - `v` is the value (0 to 1)
+ *
+ * @param f Function string to parse.
+ * @param colour Values from f are set into this structure.
+ */
+void colour_parse( char *f, colour *colour );
 
 /**
  * Convert HSV to RGB.

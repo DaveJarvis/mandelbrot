@@ -4,15 +4,22 @@
 #include <math.h>
 #include <gd.h>
 
+/**
+ * Region to be painted by a thread.
+ */
 struct region {
+  /** Upper-left x coordinate. */
   int x1;
+  /** Upper-left y coordinate. */
   int y1;
+  /** Lower-right x coordinate. */
   int x2;
+  /** Lower-right y coordinate. */
   int y2;
 };
 
 /**
- * Hide the library data type.
+ * Hides the library data type.
  */
 typedef gdImagePtr Image;
 

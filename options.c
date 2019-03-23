@@ -16,6 +16,11 @@ error_t parse_opt( int key, char *arg, struct argp_state *state ) {
     case 'h':
       fractal->height = arg ? atoi( arg ) : DEFAULT_IMAGE_HEIGHT;
       break;
+    case 'p':
+      if( arg ) {
+        colour_parse( arg, fractal->colour_base );
+      }
+      break;
     case 'i':
       fractal->iterations = arg ? atoi( arg ) : DEFAULT_ITERATIONS;
       break;

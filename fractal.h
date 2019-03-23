@@ -26,14 +26,37 @@
 #define DEFAULT_PLOT_Y     0.00
 #define DEFAULT_PLOT_ZOOM  300
 
+/**
+ * Controls how the final image appears when rendered.
+ */
 typedef struct fractal_parameters {
-  int width, height;
-  int iterations, samples;
-  double cx, cy, zoom;
+  /** Canvas width in pixels. */
+  int width;
+  /** Canvas height in pixels. */
+  int height;
 
+  /** How many iterations to test for escaping to infinity. */
+  int iterations;
+  /** Number of neighbouring pixels to subsample. */
+  int samples;
+
+  /** Central x coordinate for fractal zoom. */
+  double cx;
+  /** Central y coordinate for fractal zoom. */
+  double cy;
+  /** Zoom into (cx, cy) by this amount. */
+  double zoom;
+
+  /** True colour canvas. */
   Image image;
+
+  /** Area to draw; used by threads for embarassingly parallel work. */
   struct region *region;
 
+  /** Colour of the Mandelbrot Set. */
+  colour *colour_base;
+
+  /** Used by the thread-safe random number generator. */
   uint32_t random_state[ RANDOM_STATE_SIZE ];
 } fractal_parameters;
 
@@ -111,7 +134,8 @@ void *fractal_compute( void *f );
  * @param g Returns green channel between 0 and 1.
  * @param b Returns blue channel between 0 and 1.
  */
-void fractal_colour( double plotted, double *r, double *g, double *b );
+void fractal_colour( colour *base,
+  double plotted, double *r, double *g, double *b );
 
 /**
  * Paint the image using the plotted data.

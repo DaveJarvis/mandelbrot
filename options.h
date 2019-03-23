@@ -18,19 +18,21 @@
 extern const char *argp_program_version;
 extern const char *argp_program_bug_address;
 
-/* Program documentation. */
+/** Program documentation. */
 static char doc_program[] =
   "A simple Mandelbrot Set image generator";
 
-/* A description of the arguments we accept. */
+/** A description of the arguments we accept. */
 static char doc_args[] = "";
 
-/* The options we understand. */
+/** The options we understand. */
 static struct argp_option options[] = {
   { "debug", 'd',
     0, 0, "Write program line numbers standard output", 0 },
   { "verbose", 'v',
     0, 0, "Write algorithm to standard output", 0 },
+  { "palette", 'p',
+    "STRING", 0, "Palette function for fractal", 0 },
   { "width", 'w',
     "INTEGER", 0, "Image width" opt( DEFAULT_IMAGE_WIDTH, "px" ), 0 },
   { "height", 'h',
@@ -52,12 +54,12 @@ static struct argp_option options[] = {
   { 0 }
 };
 
-/* Used by main to communicate with parse_opt. */
+/** Used by main to communicate with parse_opt. */
 struct arguments {
-  // Fractal rendering controls
+  /** Fractal rendering controls. */
   fractal_parameters *fractal;
 
-  // Application controls
+  /** Application controls. */
   int threads;
   char *filename;
 };
@@ -72,15 +74,17 @@ struct arguments {
  */
 error_t parse_opt( int key, char *arg, struct argp_state *state );
 
-static struct argp argp = {
-  options, parse_opt, doc_args, doc_program, NULL, NULL, NULL };
-
 /**
  * Sets application default values, not including the fractal configuration.
  *
  * @param arguments Parameters to control threads, output, etc.
  */
 void options_init( struct arguments *arguments );
+
+/** Used by argp to process the command line arguments. */
+static struct argp argp = {
+  options, parse_opt, doc_args, doc_program, NULL, NULL, NULL
+};
 
 #endif
 

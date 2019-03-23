@@ -7,6 +7,9 @@
 #include <stdio.h>
 #include <time.h>
 
+/**
+ * List of log levels.
+ */
 enum { LOG_TRACE, LOG_DEBUG, LOG_INFO, LOG_WARN, LOG_ERROR, LOG_FATAL };
 
 #define log_trace(...) logging_log( LOG_TRACE, __FILE__, __LINE__, __VA_ARGS__ )

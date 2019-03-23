@@ -5,18 +5,18 @@
  * Draws the Mandelbrot Set as an image.
  */
 int main( int c, char **v ) {
+  log_info( "%s", doc_program );
+
   fractal_parameters fractal;
   fractal_parameters_init( &fractal );
+
+  log_info( "Allocate memory for fractal palette" );
+  fractal.colour_base = colour_open();
 
   struct arguments arguments;
   arguments.fractal = &fractal;
   options_init( &arguments );
   argp_parse( &argp, c, v, 0, 0, &arguments );
-
-  log_info( "%s", doc_program );
-
-  log_info( "Validate fractal settings" );
-  fractal_parameters_validate( &fractal );
 
   log_info( "Determine number of threads" );
   int threads = (int)thread_cpu_count( arguments.threads );
@@ -32,17 +32,26 @@ int main( int c, char **v ) {
   fractal.image = image_open( fractal.width, fractal.height );
 
   log_info( "Check that memory allocations succeeded" );
-  if( fractal.image == NULL || p == NULL || thread_ids == NULL ) {
+  if( fractal.colour_base == NULL ||
+      fractal.image == NULL ||
+      p == NULL ||
+      thread_ids == NULL ) {
     image_close( fractal.image );
     memory_close( p );
     thread_close( thread_ids );
     error_terminate( ERROR_MEMORY, ERROR_MEMORY_TEXT );
   }
 
+  log_info( "Validate fractal settings" );
+  fractal_parameters_validate( &fractal );
+
   log_info( "Setup: Canvas %d x %d pixels", fractal.width, fractal.height );
   log_info( "Setup: (%f, %f) centre", fractal.cx, fractal.cy );
   log_info( "Setup: %f zoom", fractal.zoom );
   log_info( "Setup: %d threads", threads );
+  log_info( "Setup: (%f, %f, %f) base colour",
+    fractal.colour_base->h, fractal.colour_base->s, fractal.colour_base->v
+  );
 
   log_info( "Start threads to calculate escape iterations" );
   for( int i = 0; i < threads; i++ ) {
@@ -82,6 +91,9 @@ int main( int c, char **v ) {
 
   log_info( "Save fractal as: %s", arguments.filename );
   image_save( fractal.image, arguments.filename );
+
+  log_info( "Release memory for fractal palette" );
+  colour_close( fractal.colour_base );
 
   log_info( "Release memory for canvas" );
   image_close( fractal.image );
