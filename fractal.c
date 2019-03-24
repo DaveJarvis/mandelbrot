@@ -1,25 +1,19 @@
 #include "fractal.h"
 
 fractal_parameters *fractal_parameters_open( void ) {
-  fractal_parameters *fractal =
-    memory_open( (size_t)sizeof( fractal_parameters ) );
-
-  if( fractal != NULL ) {
-    fractal_parameters_init( fractal );
-  }
-
-  return fractal;
+  return memory_open( (size_t)sizeof( fractal_parameters ) );
 }
 
-void fractal_parameters_init( fractal_parameters *fractal ) {
-  fractal->width = DEFAULT_IMAGE_WIDTH;
-  fractal->height = DEFAULT_IMAGE_HEIGHT;
-  fractal->iterations = DEFAULT_ITERATIONS;
-  fractal->samples = DEFAULT_SAMPLES;
+void fractal_parameters_init(
+  fractal_parameters *fractal, global_args *args ) {
+  fractal->width = args->width;
+  fractal->height = args->height;
+  fractal->iterations = args->iterations;
+  fractal->samples = args->samples;
 
-  fractal->cx = DEFAULT_PLOT_X;
-  fractal->cy = DEFAULT_PLOT_Y;
-  fractal->zoom = DEFAULT_PLOT_ZOOM;
+  fractal->cx = args->cx;
+  fractal->cy = args->cy;
+  fractal->zoom = args->zoom;
 
   fractal->region = NULL;
   fractal->image = NULL;
@@ -29,11 +23,25 @@ void fractal_parameters_init( fractal_parameters *fractal ) {
 }
 
 void fractal_parameters_validate( fractal_parameters *fractal ) {
-  if( fractal->width < 1 ) { fractal->width = DEFAULT_IMAGE_WIDTH; }
-  if( fractal->height < 1 ) { fractal->height = DEFAULT_IMAGE_HEIGHT; }
-  if( fractal->iterations < 1 ) { fractal->iterations = DEFAULT_ITERATIONS; }
-  if( fractal->samples < 1 ) { fractal->samples = DEFAULT_SAMPLES; }
-  if( fractal->zoom < 1 ) { fractal->samples = DEFAULT_PLOT_ZOOM; }
+  if( fractal->width < 1 ) {
+    fractal->width = ARG_DEFAULT_WIDTH;
+  }
+
+  if( fractal->height < 1 ) {
+    fractal->height = ARG_DEFAULT_HEIGHT;
+  }
+
+  if( fractal->iterations < 1 ) {
+    fractal->iterations = ARG_DEFAULT_ITERATIONS;
+  }
+
+  if( fractal->samples < 1 ) {
+    fractal->samples = ARG_DEFAULT_SAMPLES;
+  }
+
+  if( fractal->zoom < 1 ) {
+    fractal->samples = ARG_DEFAULT_ZOOM;
+  }
 }
 
 void fractal_parameters_copy(

@@ -9,7 +9,7 @@ void thread_close( pthread_t *thread_ids ) {
 }
 
 long thread_cpu_count( long default_value ) {
-  return default_value == DEFAULT_UNDEFINED ?
+  return default_value == ARG_UNDEFINED ?
     sysconf( _SC_NPROCESSORS_ONLN ) :
     default_value;
 }

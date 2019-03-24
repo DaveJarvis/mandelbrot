@@ -11,8 +11,6 @@
 #include "logging.h"
 #include "memory.h"
 
-#define DEFAULT_COLOUR_BASE "hsv(215.7,0.987,0.694)"
-
 /**
  * Represents the hue, saturation, and value for a colour.
  */

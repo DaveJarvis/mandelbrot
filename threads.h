@@ -4,10 +4,8 @@
 #include <pthread.h>
 #include <unistd.h>
 
+#include "args.h"
 #include "memory.h"
-
-#define DEFAULT_UNDEFINED 0L
-#define DEFAULT_THREADS DEFAULT_UNDEFINED
 
 /** 
  * Returns memory for storing a list of thread IDs.

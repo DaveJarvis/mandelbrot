@@ -7,6 +7,7 @@
 #include <stdio.h>
 
 #include "algebra.h"
+#include "args.h"
 #include "colours.h"
 #include "errors.h"
 #include "image.h"
@@ -14,17 +15,6 @@
 #include "memory.h"
 #include "random.h"
 #include "threads.h"
-
-#define UNUSED __attribute__((unused))
-
-#define DEFAULT_IMAGE_WIDTH 1024
-#define DEFAULT_IMAGE_HEIGHT 768
-#define DEFAULT_ITERATIONS 50
-#define DEFAULT_SAMPLES 1
-
-#define DEFAULT_PLOT_X    -0.75
-#define DEFAULT_PLOT_Y     0.00
-#define DEFAULT_PLOT_ZOOM  300
 
 /**
  * Controls how the final image appears when rendered.
@@ -53,7 +43,7 @@ typedef struct fractal_parameters {
   /** Area to draw; used by threads for embarassingly parallel work. */
   struct region *region;
 
-  /** Colour of the Mandelbrot Set. */
+  /** Colour of the Mandelbrot Set after parsing. */
   colour *colour_base;
 
   /** Used by the thread-safe random number generator. */
@@ -67,8 +57,11 @@ fractal_parameters *fractal_parameters_open( void );
 
 /**
  * Initializes memory for the fractal parameters.
+ *
+ * @param fractal The parameters used to configure the fractal.
+ * @param args Post-parsed commmand line parameters.
  */
-void fractal_parameters_init( fractal_parameters *fractal );
+void fractal_parameters_init( fractal_parameters *fractal, global_args *args );
 
 /**
  * Ensure that all command line parameters are set to valid values.

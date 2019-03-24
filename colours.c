@@ -8,13 +8,7 @@ double colour_min( double a, double b, double c ) {
 }
 
 colour *colour_open( void ) {
-  colour *colour = memory_open( (size_t)sizeof( colour ) );
-
-  if( colour != NULL ) {
-    colour_parse( DEFAULT_COLOUR_BASE, colour );
-  }
-
-  return colour;
+  return memory_open( (size_t)sizeof( colour ) );
 }
 
 void colour_close( colour *colour ) {
@@ -31,12 +25,12 @@ void colour_parse( char *f, colour *colour ) {
 
   sscanf( f, "%3s(%lf,%lf,%lf)", name, &v1, &v2, &v3 );
 
-  if( strstr( (const char *)name, hsv ) ) {
+  if( strncmp( (const char *)name, hsv, 3 ) == 0 ) {
     colour->h = v1;
     colour->s = v2;
     colour->v = v3;
   }
-  else if( strstr( (const char *)name, rgb ) ) {
+  else if( strncmp( (const char *)name, rgb, 3 ) == 0 ) {
     colour_rgb_to_hsv(
       v1, v2, v3, &(colour->h), &(colour->s), &(colour->v) );
   }
