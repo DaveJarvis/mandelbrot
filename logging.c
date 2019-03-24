@@ -16,6 +16,7 @@ void logging_set_level( int level ) {
   LOG.level = level;
 }
 
+__attribute__((__format__ (__printf__, 4, 0)))
 void logging_log( int level, const char *src, int line, char *message, ... ) {
   if( level >= LOG.level ) {
     pthread_mutex_lock( &lock );
@@ -28,9 +29,6 @@ void logging_log( int level, const char *src, int line, char *message, ... ) {
     // Convert nanoseconds to milliseconds.
     long millis = (long)(clock.tv_nsec / 1000000L);
 
-    va_list argptr;
-    va_start( argptr, message );
-
     printf( "[%s %02d:%02d:%02d.%.3ld] ",
       LOG_LEVELS[ level ], time->tm_hour, time->tm_min, time->tm_sec, millis );
 
@@ -38,11 +36,12 @@ void logging_log( int level, const char *src, int line, char *message, ... ) {
       printf( "(%s:%d) ", src, line );
     }
 
+    va_list argptr;
+    va_start( argptr, message );
     vfprintf( stdout, message, argptr );
+    va_end( argptr );
 
     printf( "\n" );
-
-    va_end( argptr );
 
     pthread_mutex_unlock( &lock );
   }

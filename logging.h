@@ -40,7 +40,6 @@ void logging_set_level( int level );
  *
  * @see http://clang.llvm.org/docs/AttributeReference.html#format
  */
-__attribute__((__format__ (__printf__, 4, 0)))
 void logging_log( int level, const char *src, int line, char *message, ... );
 
 #endif

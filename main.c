@@ -1,10 +1,6 @@
-#include "fractal.h"
 #include "args.h"
-
-/** Program documentation. */
-static const char *PROGRAM_NAME = "A simple Mandelbrot Set image generator";
-static const char *PROGRAM_VERSION = "1.0.0";
-//static const char *PROGRAM_ISSUES = "https://github.com/DaveJarvis/mandelbrot/issues";
+#include "fractal.h"
+#include "settings.h"
 
 /**
  * Draws the Mandelbrot Set as an image.
@@ -13,7 +9,7 @@ int main( int c, char **v ) {
   global_args args;
   args_parse( v, &args );
 
-  log_info( "%s v%s", PROGRAM_NAME, PROGRAM_VERSION );
+  settings_interpret( v, &args );
 
   log_info( "Determine number of threads" );
   int threads = (int)thread_cpu_count( args.threads );
@@ -34,7 +30,7 @@ int main( int c, char **v ) {
   log_info( "Allocate memory for fractal palette" );
   fractal.colour_base = colour_open();
 
-  log_info( "Check that memory allocations succeeded" );
+  log_info( "Verify memory allocations" );
   if( fractal.colour_base == NULL ||
       thread_ids == NULL ||
       p == NULL ||

@@ -58,6 +58,10 @@ void image_region_close( struct region *region );
  * Draw a pixel on the image at the given coordinates with the given
  * RGB colour. This converts the 8-bit RGB triplet to a 24-bit colour.
  *
+ * @param image Canvas for setting pixels
+ * @param x X coordinate to set a pixel
+ * @param y Y coordinate to set a pixel
+ *
  * @param r Red channel component (0 - 255)
  * @param g Green channel component (0 - 255)
  * @param b Blue channel component (0 - 255)
