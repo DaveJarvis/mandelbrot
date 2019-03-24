@@ -1,18 +1,20 @@
 #ifndef H_FRACTAL_COLOURS
 #define H_FRACTAL_COLOURS
 
+#include <float.h>
 #include <math.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 
+#include "logging.h"
 #include "memory.h"
 
 #define DEFAULT_COLOUR_BASE "hsv(215.7,0.987,0.694)"
 
 /**
- * Provides the fractal's base colour.
+ * Represents the hue, saturation, and value for a colour.
  */
 typedef struct colour {
   /** Hue (0 to 360) */
@@ -26,9 +28,21 @@ typedef struct colour {
 /**
  * Returns the lowest value of the given parameters.
  *
+ * @param a Compared against b.
+ * @param b Compared against a.
+ *
+ * @return The smallest value of {a, b}.
+ */
+#define min( a, b ) colour_min( a, b, DBL_MAX )
+
+/**
+ * Returns the lowest value of the given parameters.
+ *
  * @param a Compared against b and c.
  * @param b Compared against a and c.
  * @param c Compared against a and b.
+ *
+ * @return The smallest value of {a, b, c}.
  */
 double colour_min( double a, double b, double c );
 
@@ -76,6 +90,22 @@ void colour_parse( char *f, colour *colour );
  */
 void colour_hsv_to_rgb(
   double h, double s, double v, double *r, double *g, double *b );
+
+/**
+ * Convert RGB to HSV.
+ *
+ * @param red Colour (0 to 255).
+ * @param green Colour (0 to 255).
+ * @param blue Colour (0 to 255).
+ *
+ * @param h Output Hue between 0 and 360
+ * @param s Output saturation between 0 and 1
+ * @param v Output value between 0 and 1
+ *
+ * @see https://en.wikipedia.org/wiki/HSL_and_HSV
+ */
+void colour_rgb_to_hsv(
+  int red, int green, int blue, double *h, double *s, double *v );
 
 #endif
 

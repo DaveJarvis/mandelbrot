@@ -23,6 +23,7 @@ void colour_close( colour *colour ) {
 
 void colour_parse( char *f, colour *colour ) {
   const char *hsv = "hsv";
+  const char *rgb = "rgb";
   char name[3];
   double v1;
   double v2;
@@ -34,6 +35,10 @@ void colour_parse( char *f, colour *colour ) {
     colour->h = v1;
     colour->s = v2;
     colour->v = v3;
+  }
+  else if( strstr( (const char *)name, rgb ) ) {
+    colour_rgb_to_hsv(
+      v1, v2, v3, &(colour->h), &(colour->s), &(colour->v) );
   }
 }
 
@@ -63,5 +68,30 @@ void colour_hsv_to_rgb(
       default: *r = v; *g = p; *b = q; break;
     }
   }
+}
+
+void colour_rgb_to_hsv(
+  int red, int green, int blue, double *h, double *s, double *v ) {
+
+  double r = red / 255.0;
+  double g = green / 255.0;
+  double b = blue / 255.0;
+
+  float k = 0.0;
+
+  if( g < b ) {
+    double t = g; g = b; b = t;
+    k = -1.0;
+  }
+
+  if( r < g ) {
+    double t = r; r = g; g = t;
+    k = -2.0 / 6.0 - k;
+  }
+
+  float chroma = r - min( g, b );
+  *h = fabs( k + (g - b) / (6.0 * chroma + 1e-20f) ) * 360;
+  *s = chroma / (r + 1e-20f);
+  *v = r;
 }
 
