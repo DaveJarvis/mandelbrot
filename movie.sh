@@ -9,7 +9,7 @@ i=250
 
 # zoom and steps
 z=781250
-z_step=1500
+z_step=2000
 
 # x, y coordinate
 x=-0.761574

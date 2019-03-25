@@ -133,7 +133,7 @@ bool fractal_inside( double complex c ) {
     96 * pow( absc, 2 ) +
     32 * creal( c ) - 3;
 
-  double bulb = 4 * pow( cabs( c + 1 ), 2 ) - 0.25;
+  double bulb = 16.0 * pow( cabs( c + 1 ), 2 ) - 1;
 
   return cardioid < 0 || bulb < 0;
 }
