@@ -32,7 +32,7 @@ void logging_log( int level, const char *src, int line, char *message, ... ) {
     printf( "[%s %02d:%02d:%02d.%.3ld] ",
       LOG_LEVELS[ level ], time->tm_hour, time->tm_min, time->tm_sec, millis );
 
-    if( LOG.level < LOG_INFO ) {
+    if( LOG.level < LOG_POSTS ) {
       printf( "(%s:%d) ", src, line );
     }
 

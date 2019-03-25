@@ -4,18 +4,19 @@
 #include <inttypes.h>
 #include <math.h>
 #include <pthread.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <time.h>
 
 /**
  * List of log levels.
  */
-enum { LOG_TRACE, LOG_DEBUG, LOG_INFO, LOG_WARN, LOG_ERROR, LOG_FATAL };
+enum { LOG_TRACE, LOG_DEBUG, LOG_POSTS, LOG_ALERT, LOG_ERROR, LOG_FATAL };
 
 #define log_trace(...) logging_log( LOG_TRACE, __FILE__, __LINE__, __VA_ARGS__ )
 #define log_debug(...) logging_log( LOG_DEBUG, __FILE__, __LINE__, __VA_ARGS__ )
-#define log_info(...)  logging_log( LOG_INFO,  __FILE__, __LINE__, __VA_ARGS__ )
-#define log_warn(...)  logging_log( LOG_WARN,  __FILE__, __LINE__, __VA_ARGS__ )
+#define log_info(...)  logging_log( LOG_POSTS, __FILE__, __LINE__, __VA_ARGS__ )
+#define log_warn(...)  logging_log( LOG_ALERT, __FILE__, __LINE__, __VA_ARGS__ )
 #define log_error(...) logging_log( LOG_ERROR, __FILE__, __LINE__, __VA_ARGS__ )
 #define log_fatal(...) logging_log( LOG_FATAL, __FILE__, __LINE__, __VA_ARGS__ )
 

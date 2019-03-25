@@ -7,7 +7,7 @@ const char *PROGRAM_ISSUES = "https://github.com/DaveJarvis/mandelbrot/issues";
 
 void settings_interpret( char **v, global_args *args ) {
   if( args->verbose ) {
-    logging_set_level( LOG_INFO );
+    logging_set_level( LOG_POSTS );
   }
 
   if( args->debug ) {
