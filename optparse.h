@@ -1,7 +1,4 @@
-#ifndef H_FRACTAL_OPTPARSE
-#define H_FRACTAL_OPTPARSE
-
-/**
+/* 
  * Optparse is a public domain, portable, reentrant, embeddable,
  * getopt-like option parser. It's a single header file and can be
  * trivially dropped into any project. It supports POSIX getopt option
@@ -11,6 +8,8 @@
  * @see https://github.com/skeeto/optparse
  * @author Christopher Wellons
  */
+#ifndef H_FRACTAL_OPTPARSE
+#define H_FRACTAL_OPTPARSE
 
 /** Unknown command-line argument provided. */
 #define OPTPARSE_MSG_INVALID "invalid option"
