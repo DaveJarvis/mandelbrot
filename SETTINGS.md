@@ -8,6 +8,9 @@ Various colour values:
 * hsv(34.3,0.259,0.741)  - dark sand
 * hsv(42.2,0.121,0.878)  - light sand
 
+* rgb(198,33,104)        - pantone 18-2045 TCX (pink peacock)
+* rgb(52,49,72)          - pantone 19-3810 TCX (eclipse)
+
 ## Paper Size
 Standard paper sizes at 300 dpi:
 

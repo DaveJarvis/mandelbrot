@@ -47,7 +47,12 @@ plane coordinates and a zoom level, including:
 | -0.925000 |  0.2660000 | 0.032
 | -1.250660 |  0.0201200 | 0.00017
 
+Other settings to try:
+
+| x  | y  | zoom | iterations |
+|---:|---:|-----:|-----------:|
+| -0.761574 | -y -0.0847596 | 781250 | 250
+
 You will have to change their zoom levels and increase the number of
 iterations to see these areas using this application.
-
 
