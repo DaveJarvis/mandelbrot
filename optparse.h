@@ -1,8 +1,22 @@
 #ifndef H_FRACTAL_OPTPARSE
 #define H_FRACTAL_OPTPARSE
 
+/**
+ * Optparse is a public domain, portable, reentrant, embeddable,
+ * getopt-like option parser. It's a single header file and can be
+ * trivially dropped into any project. It supports POSIX getopt option
+ * strings, GNU-style long options, argument permutation, and
+ * subcommand processing.
+ *
+ * @see https://github.com/skeeto/optparse
+ * @author Christopher Wellons
+ */
+
+/** Unknown command-line argument provided. */
 #define OPTPARSE_MSG_INVALID "invalid option"
+/** Missing command-line argument option . */
 #define OPTPARSE_MSG_MISSING "option requires an argument"
+/** Command-line argument given option, none expected. */
 #define OPTPARSE_MSG_TOOMANY "option takes no arguments"
 
 struct optparse {
