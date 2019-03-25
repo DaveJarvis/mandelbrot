@@ -4,17 +4,28 @@
 # particular location in the fractal. These still images can be combined
 # to make a movie.
 
+# iterations
 i=250
+
+# zoom and steps
 z=781250
+z_step=1500
+
+# x, y coordinate
+x=-0.761574
+y=-0.0847596
+
+# samples
+s=4
 
 while true; do
   f=$(printf "%07d" $z)
-  echo $i $z as $f ...
+  echo "Generating ($x, $y) @ $z:$i ..."
 
-  ./mandelbrot -t 128 -s 4 -i $i -x -0.761574 -y -0.0847596 -z $z \
+  ./mandelbrot -t 128 -s $s -i $i -x $x -y $y -z $z \
     -p "rgb(52,49,72)" -o $f.png
 
-  let z="$z + 500"
-  let i="$i+5"
+  let z="$z+$z_step"
+  let i="$i+1"
 done
 
