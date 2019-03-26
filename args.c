@@ -20,7 +20,7 @@ struct optparse_long longopts[] = {
   { "sample", 's',
     OPTPARSE_REQUIRED, "Antialiasing" opt( ARG_DEFAULT_SAMPLES, "" ) },
   { "threads", 't',
-    OPTPARSE_REQUIRED, "Number of CPUs to use" },
+    OPTPARSE_REQUIRED, "Number of threads to use" },
   { "plot-cx", 'x',
     OPTPARSE_REQUIRED, "Central x coordinate" opt( ARG_DEFAULT_X, "" ) },
   { "plot-cy", 'y',
