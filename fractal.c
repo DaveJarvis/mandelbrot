@@ -56,7 +56,7 @@ void fractal_parameters_copy(
   dst->iterations = src->iterations;
   dst->samples = src->samples;
 
-  // Central coordinates for zooming intot he fractal.
+  // Central coordinates for zooming into the fractal.
   dst->cx = src->cx;
   dst->cy = src->cy;
   dst->zoom = src->zoom;
