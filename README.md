@@ -1,6 +1,6 @@
-# Simple Mandelbrot
+# Simple Fractal Generator
 
-Renders an image from the Mandelbrot Set.
+Renders a fractal image.
 
 # Software Requirements
 
