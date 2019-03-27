@@ -4,21 +4,24 @@ fractal_parameters *fractal_parameters_open( void ) {
   return memory_open( (size_t)sizeof( fractal_parameters ) );
 }
 
-void fractal_parameters_init(
-  fractal_parameters *fractal, global_args *args ) {
+void fractal_parameters_init( fractal_parameters *fractal, global_args *args ) {
+  // Assign the command-line parameters to the fractal controls.
   fractal->width = args->width;
   fractal->height = args->height;
   fractal->iterations = args->iterations;
   fractal->samples = args->samples;
 
+  // Complex coordinate used for zooming into the fractal.
   fractal->cx = args->cx;
   fractal->cy = args->cy;
   fractal->zoom = args->zoom;
 
+  // Initialized in main.
   fractal->region = NULL;
   fractal->image = NULL;
   fractal->colour_base = NULL;
 
+  // Ensures thread-safety for random number generation, used by antialiasing.
   random_init( fractal->random_state );
 }
 
@@ -46,15 +49,19 @@ void fractal_parameters_validate( fractal_parameters *fractal ) {
 
 void fractal_parameters_copy(
   fractal_parameters *src, fractal_parameters *dst ) {
+
+  // Every thread needs its own copy of the fractal configuration options.
   dst->width = src->width;
   dst->height = src->height;
   dst->iterations = src->iterations;
   dst->samples = src->samples;
 
+  // Central coordinates for zooming intot he fractal.
   dst->cx = src->cx;
   dst->cy = src->cy;
   dst->zoom = src->zoom;
 
+  // Threads simultaneously write to this image.
   dst->image = src->image;
   dst->colour_base = src->colour_base;
 }
@@ -63,89 +70,35 @@ void fractal_parameters_close( fractal_parameters *fractal ) {
   memory_close( fractal );
 }
 
-/*
-double fractal_escape( double complex c, int power, int max_iterate ) {
-  const double B = 256.0;
-
-  double complex z = 0;
-  int i = 0;
-
-  while( i++ < max_iterate && cdot( z, z ) < (B * B) ) {
-    z = cpow( z, power ) + c;
-  }
-
-  return i - log2( log2( cdot( z, z ) ) ) + 4.0;
-}
-
-double fractal_escape( double complex c, int power, int max_iterate ) {
-  const double light_height = 1.5;
-  const double light_angle = 45;
-  double complex v = cexp( 2.0 * light_angle * M_PI * (_Complex double)I );
-
-  // Escape boundary
-  const long B = 1000;
-
-  double complex z = c;
-
-  // Derivative of c
-  double complex dC = 1.0 * (_Complex double)I;
-
-  // Squared derivative of c
-  double complex dC2 = 0.0 * (_Complex double)I;
-
-  double colour = 0.0;
-
-  for( int i = 0; i < max_iterate; i++ ) {
-    if( fractal_inside( c ) ) {
-      break;
-    }
-
-    if( cabs( z ) > B * B ) {
-      double lo = 0.5 * log( cabs( z ) );
-
-      double complex u =
-        z * dC * ((1 + lo) * conj( cpow( dC, 2 ) ) - lo * conj( z * dC2 ));
-      u = u / cabs( u );
-
-      colour = cdot( u, v ) + light_height;
-      colour = colour / (1.0 + light_height);
-
-      break;
-    }
-
-    double complex nz = cpow( z, power ) + c;
-    double complex ndC = 2 * dC * z + 1;
-    double complex ndC2 = 2 * (dC2 * z + cpow( dC, 2 ));
-    z = nz;
-    dC = ndC;
-    dC2 = ndC2;
-  }
-
-  return colour;
-}
-*/
-
 bool fractal_inside( double complex c ) {
   double absc = cabs( c );
 
+  // Used to determine whether point is inside the Mandelbrot heart shape.
   double cardioid =
     256 * pow( absc, 4 ) -
     96 * pow( absc, 2 ) +
     32 * creal( c ) - 3;
 
+  // Used to determine whether point is inside the largest Mandelbrot circle.
   double bulb = 16.0 * pow( cabs( c + 1 ), 2 ) - 1;
 
   return cardioid < 0 || bulb < 0;
 }
 
 double fractal_distance( UNUSED int i, double complex z, double complex dC ) {
+  // Distance from "camera" to light source.
   const double light_height = 1.5;
+
+  // Angle of light hitting the 2D surface.
   const double light_angle = 45;
+
+  // Part of the normal calculation.
   double complex v = cexp( 2.0 * light_angle * M_PI * (_Complex double)I );
 
   double complex u = z / dC;
   u = u / cabs( u );
 
+  // Determine the shading based on the surface normal.
   double normal = cdot( u, v ) + light_height;
   return normal / (1.0 + light_height);
 }
@@ -160,6 +113,8 @@ double fractal_escape( double complex c, int power, int max_iterate ) {
 
   double colour = 0.0;
 
+  // Loop until it is determined that z will iterate to infinity (or maximum
+  // iterations is met). This determines the boundary for the fractal's edge.
   for( int i = 0; i < max_iterate; i++ ) {
     dC = 2.0 * dC * z + 1.0;
     z = cpow( z, power ) + c;
@@ -183,6 +138,8 @@ void *fractal_compute( void *f ) {
 
   int i = fractal->iterations;
   int s = fractal->samples;
+
+  // Allow the user to provide integer values as zoom parameters.
   double z = 1 / fractal->zoom;
   uint32_t *state = fractal->random_state;
 
@@ -235,11 +192,13 @@ void *fractal_compute( void *f ) {
           rb += tb;
         }
 
+        // Determine antialiased colour by averaging randomly selected points.
         r = rr / (s + 1);
         g = rg / (s + 1);
         b = rb / (s + 1);
       }
 
+      // Plot the pixel with or without antialiasing.
       image_pixel( fractal->image, x, y,
         (int)(r * 255), (int)(g * 255), (int)(b * 255) );
     }
@@ -250,6 +209,7 @@ void *fractal_compute( void *f ) {
 
 void fractal_colour( colour *colour_base,
   double plotted, double *r, double *g, double *b ) {
+  // Fractal distance is used to provide a shading to fake a heightmap.
   double h = 0.0;
   double s = 0.0;
   double v = plotted;

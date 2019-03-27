@@ -1,8 +1,10 @@
 #include "settings.h"
 
-/** Program documentation. */
+/** Program name is displayed when help is requested. */
 const char *PROGRAM_NAME = "A fractal image generator";
+/** Version number is displayed when help is requested. */
 const char *PROGRAM_VERSION = "1.0.0";
+/** Repository link is displayed when help requested. */
 const char *PROGRAM_ISSUES = "https://github.com/DaveJarvis/mandelbrot/issues";
 
 void settings_interpret( char **v, global_args *args ) {
@@ -10,6 +12,7 @@ void settings_interpret( char **v, global_args *args ) {
     logging_set_level( LOG_POSTS );
   }
 
+  // Debug level also includes verbose level.
   if( args->debug ) {
     logging_set_level( LOG_DEBUG );
   }

@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "algebra.h"
 #include "logging.h"
 #include "memory.h"
 

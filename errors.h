@@ -8,6 +8,9 @@
 #define ERROR_MEMORY 1
 #define ERROR_MEMORY_TEXT "Out of memory"
 
+#define ERROR_THREAD 2
+#define ERROR_THREAD_TEXT "Cannot create fractal rendering threads"
+
 /**
  * Exits the application with the given exit code.
  *

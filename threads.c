@@ -9,6 +9,7 @@ void thread_close( pthread_t *thread_ids ) {
 }
 
 long thread_cpu_count( long default_value ) {
+  // If no thread count has been set, use all available CPUs.
   return default_value == ARG_UNDEFINED ?
     sysconf( _SC_NPROCESSORS_ONLN ) :
     default_value;

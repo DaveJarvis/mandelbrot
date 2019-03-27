@@ -1,4 +1,3 @@
-#include "algebra.h"
 #include "colours.h"
 
 double colour_min( double a, double b, double c ) {
@@ -23,14 +22,17 @@ void colour_parse( char *f, colour *colour ) {
   double v2;
   double v3;
 
+  // e.g., rgb(0,255,128)
   sscanf( f, "%3s(%lf,%lf,%lf)", name, &v1, &v2, &v3 );
 
+  // The fractal rendering expects colours in HSV format.
   if( strncmp( (const char *)name, hsv, 3 ) == 0 ) {
     colour->h = v1;
     colour->s = v2;
     colour->v = v3;
   }
   else if( strncmp( (const char *)name, rgb, 3 ) == 0 ) {
+    // The user can provide an RGB format, which are first converted to HSV.
     colour_rgb_to_hsv(
       v1, v2, v3, &(colour->h), &(colour->s), &(colour->v) );
   }

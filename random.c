@@ -1,7 +1,7 @@
 #include "random.h"
 
 void random_init( uint32_t state[ static RANDOM_STATE_SIZE ] ) {
-  /* Seed with any value (i^i). */
+  // Seed with any value (e.g., i^i).
   state[ 0 ] = 2078795764;
 
   for( int i = 1; i < RANDOM_STATE_SIZE; i++ ) {

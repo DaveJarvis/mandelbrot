@@ -3,7 +3,7 @@
 #include "settings.h"
 
 /**
- * Draws the Mandelbrot Set as an image.
+ * Draws a fractal.
  */
 int main( int c, char **v ) {
   global_args args;
@@ -59,9 +59,19 @@ int main( int c, char **v ) {
   log_info( "Start threads to calculate escape iterations" );
   for( int i = 0; i < threads; i++ ) {
     fractal_parameters *worker = fractal_parameters_open();
+
+    if( worker == NULL ) {
+      // Insufficient memory; let the OS clean up the dangling pointers.
+      error_terminate( ERROR_MEMORY, ERROR_MEMORY_TEXT );
+    }
+
     fractal_parameters_copy( &fractal, worker );
 
     struct region *region = image_region_open( fractal.image, i, threads );
+
+    if( region == NULL ) {
+      error_terminate( ERROR_MEMORY, ERROR_MEMORY_TEXT );
+    }
 
     worker->region = region;
 
@@ -72,7 +82,10 @@ int main( int c, char **v ) {
       i, region->x1, region->y1, region->x2, region->y2 );
 
     // Compute the iterations within a thread for a particular region.
-    pthread_create( &thread_ids[i], NULL, fractal_compute, worker );
+    if( pthread_create( &thread_ids[i], NULL, fractal_compute, worker ) ) {
+      // If pthread_create returns non-zero, then the call failed.
+      error_terminate( ERROR_THREAD, ERROR_THREAD_TEXT );
+    }
   }
 
   log_info( "Wait for threads to finish" );
@@ -89,6 +102,7 @@ int main( int c, char **v ) {
   log_info( "Save fractal as: %s", args.filename );
   image_save( fractal.image, args.filename );
 
+  // Release memory in reverse order of allocation.
   log_info( "Release memory for fractal palette" );
   colour_close( fractal.colour_base );
 

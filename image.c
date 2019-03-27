@@ -15,25 +15,28 @@ struct region *image_region_open( Image image, int n, int regions ) {
   struct region *region = memory_open( sizeof( struct region ) );
 
   if( region != NULL ) {
+    // The parameters could have been passed in, but deriving them keeps the
+    // function prototype simpler.
     gdImageGetClip( image, &x1, &y1, &width, &height );
 
+    // Determine the pixel area that each thread is responsible for rendering.
     int step_size = width / regions;
     int remainder = width - (step_size * regions);
 
     region->x1 = step_size * n;
 
-    /* Determine whether extra work is required by the last thread. */
+    // Determine whether extra work is required by the last thread.
     if( n < remainder ) {
-      /* If so, lengthen the chunk and start from the corrected position. */
+      // If so, lengthen the chunk and start from the corrected position.
       step_size++;
       region->x1 += n;
     }
     else {
-      /* If not, start from the corrected position. */
+      // If not, start from the corrected position.
       region->x1 += remainder;
     }
 
-    /* Will not exceed the image size. */
+    // Will not exceed the image size.
     region->x2 = region->x1 + step_size;
 
     region->y1 = 0;
@@ -48,6 +51,7 @@ void image_region_close( struct region *region ) {
 }
 
 void image_pixel( Image image, int x, int y, int r, int g, int b ) {
+  // Convert three 8-bit colours to a single 24-bit ("true") colour.
   int colour = (r << 16) | (g << 8) | b;
 
   gdImageSetPixel( image, x, y, colour );
@@ -57,8 +61,9 @@ void image_save( Image image, char *filename ) {
   FILE *fout = fopen( filename, "wb" );
 
   if( fout != NULL ) {
+    // Persist the image.
     gdImagePng( image, fout );
-    
+
     fclose( fout );
   }
 }
