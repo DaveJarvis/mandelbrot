@@ -31,12 +31,13 @@ void colour_parse( char *f, colour *out ) {
     out->hsv[0] = v1;
     out->hsv[1] = v2;
     out->hsv[2] = v3;
+    colour_hsv_to_rgb( out, out );
   }
   else if( strncmp( (const char *)name, COLOUR_FUNC_RGB, 3 ) == 0 ) {
     // The user can provide an RGB format, which are first converted to HSV.
     out->rgb[0] = v1;
-    out->rgb[1] = v1;
-    out->rgb[2] = v1;
+    out->rgb[1] = v2;
+    out->rgb[2] = v3;
     colour_rgb_to_hsv( out, out );
   }
 }
