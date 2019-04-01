@@ -17,7 +17,6 @@ Third-party libraries required to build the binary include:
 * [glibc](https://www.gnu.org/software/libc/) - Math & Threading
 * [libgd](https://libgd.github.io/) - Graphics
 * [libpng](http://www.libpng.org/pub/png/libpng.html) - PNG format
-* [libjpeg](http://libjpeg.sourceforge.net/) - JPEG format
 * [zlib](https://www.zlib.net/) - Image compressor
 
 # Build
