@@ -47,14 +47,14 @@ void colour_hsv_to_rgb( colour *in, colour *out ) {
   double s = in->hsv[1];
   double v = in->hsv[2];
 
-  double *r = &(out->rgb[0]);
-  double *g = &(out->rgb[1]);
-  double *b = &(out->rgb[2]);
+  double r;
+  double g;
+  double b;
 
   if( s <= 0.0 ) {
-    *r = v;
-    *g = v;
-    *b = v;
+    r = v;
+    g = v;
+    b = v;
   }
   else {
     double hh = h >= 360.0 ? 0.0 : h / 60.0;
@@ -65,15 +65,19 @@ void colour_hsv_to_rgb( colour *in, colour *out ) {
     double t = v * (1.0 - (s * (1.0 - ff)));
 
     switch( i ) {
-      case  0: *r = v; *g = t; *b = p; break;
-      case  1: *r = q; *g = v; *b = p; break;
-      case  2: *r = p; *g = v; *b = t; break;
-      case  3: *r = p; *g = q; *b = v; break;
-      case  4: *r = t; *g = p; *b = v; break;
+      case  0: r = v; g = t; b = p; break;
+      case  1: r = q; g = v; b = p; break;
+      case  2: r = p; g = v; b = t; break;
+      case  3: r = p; g = q; b = v; break;
+      case  4: r = t; g = p; b = v; break;
       case  5:
-      default: *r = v; *g = p; *b = q; break;
+      default: r = v; g = p; b = q; break;
     }
   }
+
+  out->rgb[0] = (int)(r * 255.0);
+  out->rgb[1] = (int)(g * 255.0);
+  out->rgb[2] = (int)(b * 255.0);
 }
 
 void colour_rgb_to_hsv( colour *in, colour *out ) {

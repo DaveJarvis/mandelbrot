@@ -21,7 +21,7 @@ typedef struct colour {
   double hsv[3];
 
   /** Red (0 to 255), green (0 to 255), and blue (0 to 255). */
-  double rgb[3];
+  int rgb[3];
 } colour;
 
 /**
