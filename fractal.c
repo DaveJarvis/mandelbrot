@@ -143,9 +143,11 @@ void *fractal_compute( void *f ) {
   double z = 1 / fractal->zoom;
   uint32_t *state = fractal->random_state;
 
-  double r = 0;
-  double g = 0;
-  double b = 0;
+  colour colour_plot;
+
+  colour_plot.rgb[0] = 0;
+  colour_plot.rgb[1] = 0;
+  colour_plot.rgb[2] = 0;
 
   log_debug( "Translate coordinates to complex plane" );
   double x_real = region->x1 * z - fractal->width / 2.0 * z + fractal->cx;
@@ -164,13 +166,13 @@ void *fractal_compute( void *f ) {
 
       // Compute the iterations (colour) from the escape.
       double distance = fractal_escape( c, 2, i );
-      fractal_colour( fractal->colour_base, distance, &r, &g, &b );
+      fractal_colour( distance, fractal->colour_base, &colour_plot );
 
       // If antialiasing was requested...
       if( s > 1 ) {
-        double rr = r;
-        double rg = g;
-        double rb = b;
+        double rr = colour_plot.rgb[0];
+        double rg = colour_plot.rgb[1];
+        double rb = colour_plot.rgb[2];
 
         // Average neighbouring pixels picked at random.
         for( int p = 0; p < s; p++ ) {
@@ -181,45 +183,48 @@ void *fractal_compute( void *f ) {
           double ry = y_imag + ((random_next( state ) % ssize) * z / s) * ysign;
 
           double complex rc = rx + ry * (_Complex double)I;
-          double tr = 0;
-          double tg = 0;
-          double tb = 0;
+          colour neighbour;
 
           double rdistance = fractal_escape( rc, 2, i );
-          fractal_colour( fractal->colour_base, rdistance, &tr, &tg, &tb );
-          rr += tr;
-          rg += tg;
-          rb += tb;
+          fractal_colour( rdistance, fractal->colour_base, &neighbour );
+          rr += neighbour.rgb[0];
+          rg += neighbour.rgb[1];
+          rb += neighbour.rgb[1];
         }
 
         // Determine antialiased colour by averaging randomly selected points.
-        r = rr / (s + 1);
-        g = rg / (s + 1);
-        b = rb / (s + 1);
+        colour_plot.rgb[0] = rr / (s + 1);
+        colour_plot.rgb[1] = rg / (s + 1);
+        colour_plot.rgb[2] = rb / (s + 1);
       }
 
+      colour_plot.rgb[0] *= 255;
+      colour_plot.rgb[1] *= 255;
+      colour_plot.rgb[2] *= 255;
+
       // Plot the pixel with or without antialiasing.
-      image_pixel( fractal->image, x, y,
-        (int)(r * 255), (int)(g * 255), (int)(b * 255) );
+      image_pixel( fractal->image, x, y, colour_plot );
     }
   }
 
   pthread_exit( NULL );
 }
 
-void fractal_colour( colour *colour_base,
-  double plotted, double *r, double *g, double *b ) {
+void fractal_colour( double plotted, colour *base, colour *out ) {
   // Fractal distance is used to provide a shading to fake a heightmap.
-  double h = 0.0;
-  double s = 0.0;
-  double v = plotted;
+  colour distance;
 
-  if( v <= 0 ) {
-    h = colour_base->h;
-    s = colour_base->s;
-    v = colour_base->v;
+  if( plotted > 0 ) {
+    distance.hsv[0] = 0.0;
+    distance.hsv[1] = 0.0;
+    distance.hsv[2] = plotted;
+  }
+  else {
+    distance.hsv[0] = base->hsv[0];
+    distance.hsv[1] = base->hsv[1];
+    distance.hsv[2] = base->hsv[2];
   }
 
-  colour_hsv_to_rgb( h, s, v, r, g, b );
+  colour_hsv_to_rgb( &distance, out );
 }
 

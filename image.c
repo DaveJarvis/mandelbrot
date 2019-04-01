@@ -50,9 +50,12 @@ void image_region_close( struct region *region ) {
   memory_close( region );
 }
 
-void image_pixel( Image image, int x, int y, int r, int g, int b ) {
+void image_pixel( Image image, int x, int y, colour pixel ) {
   // Convert three 8-bit colours to a single 24-bit ("true") colour.
-  int colour = (r << 16) | (g << 8) | b;
+  int colour =
+    ((int)(pixel.rgb[0]) << 16) |
+    ((int)(pixel.rgb[1]) << 8) |
+    ((int)(pixel.rgb[2]));
 
   gdImageSetPixel( image, x, y, colour );
 }

@@ -4,6 +4,8 @@
 #include <math.h>
 #include <gd.h>
 
+#include "colours.h"
+
 /**
  * Region to be painted by a thread.
  */
@@ -61,12 +63,9 @@ void image_region_close( struct region *region );
  * @param image Canvas for setting pixels
  * @param x X coordinate to set a pixel
  * @param y Y coordinate to set a pixel
- *
- * @param r Red channel component (0 - 255)
- * @param g Green channel component (0 - 255)
- * @param b Blue channel component (0 - 255)
+ * @param pixel Red, green, and blue channel components (0 - 255)
  */
-void image_pixel( Image image, int x, int y, int r, int g, int b );
+void image_pixel( Image image, int x, int y, colour pixel );
 
 /**
  * Export the given image to the specified file.

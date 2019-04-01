@@ -1,5 +1,8 @@
 #include "colours.h"
 
+static const char *COLOUR_FUNC_HSV = "hsv";
+static const char *COLOUR_FUNC_RGB = "rgb";
+
 double colour_min( double a, double b, double c ) {
   return a < b
     ? (a < c ? a : c)
@@ -14,9 +17,7 @@ void colour_close( colour *colour ) {
   memory_close( colour );
 }
 
-void colour_parse( char *f, colour *colour ) {
-  const char *hsv = "hsv";
-  const char *rgb = "rgb";
+void colour_parse( char *f, colour *out ) {
   char name[3];
   double v1;
   double v2;
@@ -26,20 +27,28 @@ void colour_parse( char *f, colour *colour ) {
   sscanf( f, "%3s(%lf,%lf,%lf)", name, &v1, &v2, &v3 );
 
   // The fractal rendering expects colours in HSV format.
-  if( strncmp( (const char *)name, hsv, 3 ) == 0 ) {
-    colour->h = v1;
-    colour->s = v2;
-    colour->v = v3;
+  if( strncmp( (const char *)name, COLOUR_FUNC_HSV, 3 ) == 0 ) {
+    out->hsv[0] = v1;
+    out->hsv[1] = v2;
+    out->hsv[2] = v3;
   }
-  else if( strncmp( (const char *)name, rgb, 3 ) == 0 ) {
+  else if( strncmp( (const char *)name, COLOUR_FUNC_RGB, 3 ) == 0 ) {
     // The user can provide an RGB format, which are first converted to HSV.
-    colour_rgb_to_hsv(
-      v1, v2, v3, &(colour->h), &(colour->s), &(colour->v) );
+    out->rgb[0] = v1;
+    out->rgb[1] = v1;
+    out->rgb[2] = v1;
+    colour_rgb_to_hsv( out, out );
   }
 }
 
-void colour_hsv_to_rgb(
-  double h, double s, double v, double *r, double *g, double *b ) {
+void colour_hsv_to_rgb( colour *in, colour *out ) {
+  double h = in->hsv[0];
+  double s = in->hsv[1];
+  double v = in->hsv[2];
+
+  double *r = &(out->rgb[0]);
+  double *g = &(out->rgb[1]);
+  double *b = &(out->rgb[2]);
 
   if( s <= 0.0 ) {
     *r = v;
@@ -66,12 +75,10 @@ void colour_hsv_to_rgb(
   }
 }
 
-void colour_rgb_to_hsv(
-  int red, int green, int blue, double *h, double *s, double *v ) {
-
-  double r = red / 255.0;
-  double g = green / 255.0;
-  double b = blue / 255.0;
+void colour_rgb_to_hsv( colour *in, colour *out ) {
+  double r = in->rgb[0] / 255.0;
+  double g = in->rgb[1] / 255.0;
+  double b = in->rgb[2] / 255.0;
 
   float k = 0.0;
 
@@ -86,8 +93,8 @@ void colour_rgb_to_hsv(
   }
 
   float chroma = r - min( g, b );
-  *h = fabs( k + (g - b) / (6.0 * chroma + 1e-20f) ) * 360;
-  *s = chroma / (r + 1e-20f);
-  *v = r;
+  out->hsv[0] = fabs( k + (g - b) / (6.0 * chroma + 1e-20f) ) * 360;
+  out->hsv[1] = chroma / (r + 1e-20f);
+  out->hsv[2] = r;
 }
 

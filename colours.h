@@ -13,15 +13,15 @@
 #include "memory.h"
 
 /**
- * Represents the hue, saturation, and value for a colour.
+ * Represents the hue, saturation, and value for a colour, as well as its
+ * RGB values.
  */
 typedef struct colour {
-  /** Hue (0 to 360) */
-  double h;
-  /** Saturation (0 to 1) */
-  double s;
-  /** Value (0 to 1) */
-  double v;
+  /** Hue (0 to 360), saturation (0 to 1), and value (0 to 1). */
+  double hsv[3];
+
+  /** Red (0 to 255), green (0 to 255), and blue (0 to 255). */
+  double rgb[3];
 } colour;
 
 /**
@@ -62,49 +62,47 @@ void colour_close( colour *colour );
 
 /**
  * Parses a colour string into its equivalent colour. The string f takes the
- * form `hsv(h,s,v)` where:
+ * form `hsv(h,s,v)` or `rgb(r,g,b)` where:
  *
- * - `hsv` is the function
- * - `h` is the hue (0 to 360)
- * - `s` is the saturation (0 to 1)
- * - `v` is the value (0 to 1)
+ * - `f` is the colour function to parse.
+ * - `h` is the hue (0 to 360) or red (0 to 255).
+ * - `s` is the saturation (0 to 1) or green (0 to 255).
+ * - `v` is the value (0 to 1) or blue (0 to 255).
  *
  * @param f Function string to parse.
- * @param colour Values from f are set into this structure.
+ * @param out Values from f are set into this structure.
  */
-void colour_parse( char *f, colour *colour );
+void colour_parse( char *f, colour *out );
 
 /**
  * Convert HSV to RGB.
  *
- * @param h Hue between 0 and 360
- * @param s Saturation between 0 and 1
- * @param v Value between 0 and 1
+ * @param in.hsv[0] Hue between 0 and 360.
+ * @param in.hsv[1] Saturation between 0 and 1.
+ * @param in.hsv[2] Value between 0 and 1.
  *
- * @param r Output red colour (0 to 1).
- * @param g Output green colour (0 to 1).
- * @param b Output blue colour (0 to 1).
+ * @param out.rgb[0] Output red colour (0 to 1).
+ * @param out.rgb[1] Output green colour (0 to 1).
+ * @param out.rgb[2] Output blue colour (0 to 1).
  *
  * @see https://en.wikipedia.org/wiki/HSL_and_HSV
  */
-void colour_hsv_to_rgb(
-  double h, double s, double v, double *r, double *g, double *b );
+void colour_hsv_to_rgb( colour *in, colour *out );
 
 /**
  * Convert RGB to HSV.
  *
- * @param red Colour (0 to 255).
- * @param green Colour (0 to 255).
- * @param blue Colour (0 to 255).
+ * @param in.rgb[0] Red colour (0 to 255).
+ * @param in.rgb[1] Green colour (0 to 255).
+ * @param in.rgb[2] Blue colour (0 to 255).
  *
- * @param h Output Hue between 0 and 360
- * @param s Output saturation between 0 and 1
- * @param v Output value between 0 and 1
+ * @param out.hsv[0] Output Hue between 0 and 360.
+ * @param out.hsv[1] Output saturation between 0 and 1.
+ * @param out.hsv[2] Output value between 0 and 1.
  *
  * @see https://en.wikipedia.org/wiki/HSL_and_HSV
  */
-void colour_rgb_to_hsv(
-  int red, int green, int blue, double *h, double *s, double *v );
+void colour_rgb_to_hsv( colour *in, colour *out );
 
 #endif
 

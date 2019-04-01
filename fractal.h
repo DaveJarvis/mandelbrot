@@ -122,14 +122,11 @@ void *fractal_compute( void *f );
 /**
  * Generate a colour for a point on the fractal plot.
  *
- * @param base Base colour to use for Mandelbrot Set.
  * @param plotted Value returned from fractal_distance.
- * @param r Returns red channel between 0 and 1.
- * @param g Returns green channel between 0 and 1.
- * @param b Returns blue channel between 0 and 1.
+ * @param base Base colour to use for Mandelbrot Set.
+ * @param out Returns red, green, and blue channels between 0 and 1.
  */
-void fractal_colour( colour *base,
-  double plotted, double *r, double *g, double *b );
+void fractal_colour( double plotted, colour *base, colour *out );
 
 /**
  * Paint the image using the plotted data.

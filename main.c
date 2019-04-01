@@ -53,7 +53,9 @@ int main( int c, char **v ) {
   log_info( "Setup: %f zoom", fractal.zoom );
   log_info( "Setup: %d threads", threads );
   log_info( "Setup: hsv(%f, %f, %f)",
-    fractal.colour_base->h, fractal.colour_base->s, fractal.colour_base->v
+    fractal.colour_base->hsv[0],
+    fractal.colour_base->hsv[1],
+    fractal.colour_base->hsv[2]
   );
 
   log_info( "Start threads to calculate escape iterations" );
