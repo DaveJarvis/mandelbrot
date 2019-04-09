@@ -18,12 +18,12 @@ There are a few ways to increase the render quality, including:
 * Use `-s` to increase the subsample size, which controls anti-aliasing.
 Increasing this number will dramatically increase the amount of time to
 render the image. Usually a setting of 4 will suffice.
-** 1 - The default (no anti-aliasing).
-** 2 - Can leave visible artefact streaks.
-** 4 - Overall smooth appearance.
-** 9 - High-quality smoothing.
-** 16 - Supreme smoothing.
-** 32 - Extraordinarily smooth.
+  * 1 - The default (no anti-aliasing).
+  * 2 - Can leave visible artefact streaks.
+  * 4 - Overall smooth appearance.
+  * 9 - High-quality smoothing.
+  * 16 - Supreme smoothing.
+  * 32 - Extraordinarily smooth.
 * Use `-w` and `-h` to change the width and height.
 * Use `-i` to increase the number of iterations.
 
