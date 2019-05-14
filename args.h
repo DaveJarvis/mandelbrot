@@ -33,7 +33,7 @@
 #define xstr(x) #x
 #define str(x) xstr(x)
 
-#define opt( x,y) " ("str(x)y")"
+#define opt(x,y) " ("str(x)y")"
 
 /** List of command line arguments to parse into global_args structure. */
 extern struct optparse_long longopts[];
